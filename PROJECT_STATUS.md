@@ -61,9 +61,19 @@ Converted to substrate viewports so far:
 ```text
 daily/index.html
 gallery/plate-stills/index.html
+gallery/mandalas/index.html
+gallery/tessellation-posters/index.html
+gallery/field-drawings/index.html
+gallery/community/index.html
+gallery/downloads/index.html
+books/theorem-zero-book-1/index.html
+books/theorem-zero-book-2/index.html
+books/construction-ledger/index.html
+books/companion/index.html
+books/visual-relations/index.html
 ```
 
-Remaining visual pages should be converted progressively.
+Remaining visual pages should be converted progressively, especially Exhibitions, Readers, section roots, and notes HTML pages.
 
 ## Current Status
 
@@ -101,82 +111,6 @@ Galway Geometry is a visual geometry project for:
 
 The deeper project includes construction ledgers, visual relation readers, Theorem Zero material, and a lawful geometric field model. That deeper project should remain available but should not dominate the landing page.
 
-## Current Repository Shape
-
-Approximate current structure:
-
-```text
-Galway-Geometry/
-├── README.md
-├── PROJECT_STATUS.md
-├── index.html
-├── 404.html
-├── .nojekyll
-├── assets/
-│   ├── css/
-│   │   ├── galway.css
-│   │   ├── plate-reader.css
-│   │   └── visual-previews.css
-│   └── js/
-│       ├── field-preview.js
-│       ├── field-paint.js
-│       ├── geometry-field.js
-│       ├── navigation.js
-│       ├── plate-engine.js
-│       ├── substrate-viewport.js
-│       └── typewriter.js
-├── books/
-│   ├── index.html
-│   ├── theorem-zero-book-1/
-│   ├── theorem-zero-book-2/
-│   ├── construction-ledger/
-│   ├── companion/
-│   └── visual-relations/
-├── daily/
-│   └── index.html
-├── exhibitions/
-│   ├── index.html
-│   ├── equilateral-hex/
-│   ├── savant-series/
-│   ├── field-series/
-│   └── archive/
-├── field-canvas/
-│   ├── index.html
-│   ├── export/
-│   ├── mandala/
-│   ├── paint/
-│   │   ├── index.html
-│   │   └── app.html
-│   ├── picture-to-geometry/
-│   ├── symmetry/
-│   └── tessellations/
-├── gallery/
-│   ├── index.html
-│   ├── plate-stills/
-│   ├── mandalas/
-│   ├── tessellation-posters/
-│   ├── field-drawings/
-│   ├── community/
-│   └── downloads/
-├── notes/
-│   ├── index.html
-│   ├── lawful-visual-quality.md
-│   ├── management-plan.md
-│   ├── site-architecture.md
-│   ├── site-architecture.html
-│   └── project-status.html
-├── readers/
-│   ├── index.html
-│   ├── theorem-reader/
-│   ├── visual-relations/
-│   └── plate-engine/
-└── workshops/
-    ├── colouring/
-    └── tessellations/
-```
-
-Some child folders may still need verification after manual GitHub uploads. Do not assume a child page exists until fetched or viewed.
-
 ## What Works Now
 
 - Home page exists.
@@ -195,18 +129,20 @@ Some child folders may still need verification after manual GitHub uploads. Do n
 - Section roots repaired after accidental child-page overwrites.
 - Gallery, Books, Exhibitions, and Readers child routes have been repaired with real HTML destinations.
 - Daily Geometry static prototype exists at `daily/index.html` and now uses a substrate viewport.
-- Plate Stills gallery route now uses a substrate viewport.
+- All Gallery child visual routes now use substrate viewports.
+- All Books child visual routes now use substrate viewports.
 - Lawful visual quality rule exists at `notes/lawful-visual-quality.md`.
 
 ## Known Risks
 
-1. Several generated child pages still carry independent inline SVG previews and should be converted to substrate viewports.
-2. Some generated child pages may still be thin and need richer visual content.
-3. Any future preview image may drift into decorative geometry unless checked against the lawful visual quality rule.
-4. `index.html` at site root still contains substantial inline CSS/JS and should eventually be refactored to shared assets.
-5. The plate engine is only v0.1 and does not yet perform the full compose-hold-decompose-repeat theatre.
-6. The field canvas exports SVG, but PNG export, undo, save/load, and symmetry painting remain unfinished.
-7. Downloadable SVG assets are not yet present.
+1. Exhibitions and Readers prepared routes still need viewport conversion except where a true authored plate event is intended.
+2. Section roots and notes HTML pages may still carry independent inline SVG previews.
+3. Some generated child pages may still be thin and need richer visual content.
+4. Any future preview image may drift into decorative geometry unless checked against the lawful visual quality rule.
+5. `index.html` at site root still contains substantial inline CSS/JS and should eventually be refactored to shared assets.
+6. The plate engine is only v0.1 and does not yet perform the full compose-hold-decompose-repeat theatre.
+7. The field canvas exports SVG, but PNG export, undo, save/load, and symmetry painting remain unfinished.
+8. Downloadable SVG assets are not yet present.
 
 ## Completed Since Initial Spine
 
@@ -232,15 +168,17 @@ Some child folders may still need verification after manual GitHub uploads. Do n
 - Added lawful visual quality rule.
 - Added substrate viewport renderer.
 - Converted Daily Geometry to use a substrate viewport.
-- Converted Gallery Plate Stills to use a substrate viewport.
+- Converted all Gallery child visual routes to substrate viewports.
+- Converted all Books child visual routes to substrate viewports.
 
 ## Immediate Next Work
 
 Priority 1: Continue lawful viewport conversion.
 
-- Convert remaining Gallery visual pages to substrate viewport declarations.
-- Convert Books visual landing pages to substrate viewport declarations.
 - Convert Exhibitions prepared routes to substrate viewport declarations where appropriate.
+- Convert Readers prepared routes to substrate viewport declarations where appropriate.
+- Convert section roots to substrate viewports.
+- Convert notes HTML pages to substrate viewports.
 - Keep independent SVG only when it is authored as a true plate event and still obeys the substrate.
 
 Priority 2: Link and path audit continuation.
