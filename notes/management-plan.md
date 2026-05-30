@@ -10,9 +10,9 @@ The public front door should remain aesthetic, practical, and visitor-facing. Th
 
 ## Active Build Convention: Construction Mode
 
-Construction Mode is now the active project convention.
+Construction Mode remains the active project convention, but it is no longer promoted by a public banner on the home page.
 
-The final public architecture remains the goal, but during active construction the site must surface the current working objects first.
+The final public architecture remains the goal, and the home page should now behave more like a public-facing landing page. Construction Mode remains available as a working dashboard for the builder and for active development.
 
 The working dashboard is:
 
@@ -20,26 +20,26 @@ The working dashboard is:
 construction/index.html
 ```
 
-The home page now has a visible Construction Mode entry point near the top. This is intentional. It allows the site owner to open the public site and immediately reach the current active build objects without navigating the final architecture.
-
 Current Construction Mode objects:
 
 ```text
+construction/colouring-generator/
+construction/galway_geometry_100_plate_catalogue.html
+construction/galway_geometry_site_population_reservoir.html
+miscellaneous-visuals/index.html
 plates/index.html
 readers/plate-engine/?plate=diameter-study
-daily/index.html
 field-canvas/paint/app.html
-assets/js/plate-registry.js
 PROJECT_STATUS.md
 ```
 
 The dashboard should be updated as the active build focus changes.
 
-Construction Mode does not replace the public site. It is a temporary working layer placed in front of the final architecture while the site is being built.
+Construction Mode does not replace the public site. It is a temporary working layer behind the public-facing architecture while the site is being built.
 
 ## Current Repository State
 
-The repository now has a working public spine, shared visual styling, shared scripts, documentation, a custom 404, a basic field canvas tool, a basic plate reader, a plate registry, a plate deck, a registry-connected reader route, a first exhibition route, repaired section roots, repaired child routes, a static Daily Geometry prototype, and a Construction Mode dashboard.
+The repository now has a working public spine, shared visual styling, shared scripts, documentation, a custom 404, a basic field canvas tool, a basic plate reader, a plate registry, a plate deck, a registry-connected reader route, a first exhibition route, repaired section roots, repaired child routes, a static Daily Geometry prototype, two major visual reservoirs, a Colouring Generator target, a Miscellaneous Visuals holding route, and a Construction Mode dashboard.
 
 Core public structure:
 
@@ -72,13 +72,14 @@ Galway-Geometry/
 ├── exhibitions/
 ├── field-canvas/
 ├── gallery/
+├── miscellaneous-visuals/
 ├── notes/
 ├── plates/
 ├── readers/
 └── workshops/
 ```
 
-## Completed Route Repair Pass
+## Completed Route Repair and Population Pass
 
 The following section roots are confirmed as section landing pages rather than accidentally overwritten child pages:
 
@@ -90,7 +91,7 @@ readers/index.html
 notes/index.html
 ```
 
-The following previously missing child routes have been created as real HTML pages with visible generated geometry:
+The following child routes now exist as real HTML pages or construction tools:
 
 ```text
 gallery/plate-stills/index.html
@@ -111,10 +112,14 @@ readers/visual-relations/index.html
 readers/plate-engine/index.html
 daily/index.html
 construction/index.html
+construction/galway_geometry_100_plate_catalogue.html
+construction/galway_geometry_site_population_reservoir.html
+construction/colouring-generator/
+miscellaneous-visuals/index.html
 plates/index.html
 ```
 
-Already existing and confirmed during this pass:
+Already existing and confirmed during the wider pass:
 
 ```text
 exhibitions/equilateral-hex/index.html
@@ -192,6 +197,7 @@ Completed:
 - [x] Repair section roots after upload overwrite issue.
 - [x] Repair missing child pages behind visible cards.
 - [x] Add Construction Mode dashboard.
+- [x] Demote Construction Mode from the public home page banner.
 
 Remaining:
 
@@ -202,9 +208,9 @@ Remaining:
 
 ## Milestone 2: Landing Page Completion
 
-Status: substantially started; Construction Mode active.
+Status: substantially started; public-facing again.
 
-The landing page currently presents the site as public visual geometry, not as a theorem manifesto. It now also surfaces Construction Mode at the top while the site is actively being built.
+The landing page currently presents the site as public visual geometry, not as a theorem manifesto. Construction Mode is no longer displayed as a prominent banner. The hero now routes visitors toward Colouring, Plate Deck, and Daily Geometry.
 
 Remaining:
 
@@ -212,7 +218,7 @@ Remaining:
 - [ ] Add or confirm Open Graph metadata.
 - [ ] Confirm hero and visual preview on phone, tablet, and desktop.
 - [ ] Continue removing any residual heavy theory from first-contact copy.
-- [ ] Eventually remove or demote Construction Mode when the public site reaches v1.0.
+- [ ] Keep Construction Mode available but not dominant.
 
 ## Milestone 3: Plate Deck and Reader
 
@@ -263,9 +269,9 @@ Completed:
 - [x] `field-canvas/index.html` exists.
 - [x] `field-canvas/paint/app.html` exists.
 - [x] `field-canvas/mandala/index.html` exists.
-- [x] `field-canvas/tessellations/index.html` exists.
+- [x] `field-canvas/tessellations/index.html` exists and is wired to reservoir assets.
 - [x] `field-canvas/picture-to-geometry/index.html` exists.
-- [x] `field-canvas/export/index.html` exists.
+- [x] `field-canvas/export/index.html` exists and is wired to reservoir assets.
 - [x] SVG export exists in the paint tool.
 
 Remaining:
@@ -333,7 +339,7 @@ Completed:
 - [x] Page includes one relation and one drawing prompt.
 - [x] Page uses honest wording for future email subscription.
 - [x] Page uses a substrate viewport.
-- [x] Daily Geometry is linked from the construction dashboard.
+- [x] Daily Geometry is linked from the public home hero.
 
 Remaining:
 
@@ -341,25 +347,40 @@ Remaining:
 - [ ] Add daily plate registry.
 - [ ] Choose external provider before adding any real email subscription form.
 
-## Milestone 9: Downloadables v0.1
+## Milestone 9: Colouring and Downloadables
 
-Status: not yet complete.
+Status: generator target wired; verification still needed.
 
-Next files to add:
+Completed:
 
-- [ ] Triangle grid A4 SVG.
-- [ ] Hex grid A4 SVG.
-- [ ] Mandala colouring sheet SVG.
-- [ ] Link downloadables from Field Canvas, Gallery, and Workshops.
+- [x] `workshops/colouring/index.html` exists and links to the Colouring Generator target.
+- [x] Site Population Reservoir includes colouring and downloadable SVG sheet concepts.
+- [x] `field-canvas/tessellations/index.html` and `field-canvas/export/index.html` point to reservoir download assets.
+
+Expected generator files:
+
+```text
+construction/colouring-generator/index.html
+construction/colouring-generator/recipes.js
+construction/colouring-generator/renderer.js
+```
+
+Remaining:
+
+- [ ] Verify the Colouring Generator loads from GitHub Pages.
+- [ ] Extract stable downloadable triangle grid A4 SVG.
+- [ ] Extract stable downloadable hex grid A4 SVG.
+- [ ] Extract stable downloadable mandala colouring sheet SVG.
+- [ ] Link stable downloadables from Field Canvas, Gallery, and Workshops.
 
 ## Immediate Next Work Order
 
-1. Use Construction Mode as the active work surface.
-2. Enrich `assets/js/substrate-viewport.js` with more lawful visual views.
-3. Add more plates to `assets/js/plate-registry.js`.
-4. Convert remaining Exhibitions, Readers, section roots, and notes visual pages to substrate viewports where appropriate.
-5. Improve `field-canvas/paint/app.html` with PNG export and undo.
-6. Add the first downloadable SVG assets.
+1. Verify the Colouring Generator path and dependencies.
+2. Mine the reservoirs into stable downloadable assets.
+3. Enrich `assets/js/substrate-viewport.js` with more lawful visual views.
+4. Add more plates to `assets/js/plate-registry.js`.
+5. Convert remaining Exhibitions, Readers, section roots, and notes visual pages to substrate viewports where appropriate.
+6. Improve `field-canvas/paint/app.html` with PNG export and undo.
 
 ## Working Principle
 
@@ -369,6 +390,6 @@ Do not reinterpret pictures as generic photos. In this project, pictures usually
 
 Do not bury the visitor in theory at the front door. The front page should say what the site contains and what visitors can do.
 
-During construction, put current working objects in Construction Mode first.
+Construction Mode remains available, but it should no longer dominate the public home page.
 
 Keep momentum. Do coherent batches. Report at useful checkpoints.
