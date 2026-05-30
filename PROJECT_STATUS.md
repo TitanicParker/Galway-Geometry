@@ -10,9 +10,9 @@ The public front door is not a theorem manifesto. It is a mode gateway for geome
 
 ## Governing Front Door: Four Modes
 
-The home page is now a four-mode gateway. This is the governing organizing principle for the public site.
+The home page is a four-mode gateway. This is the governing organizing principle for the public site.
 
-The first choice a visitor sees should be:
+The first choice a visitor sees is:
 
 ```text
 Colouring
@@ -23,9 +23,9 @@ Ordinary Website
 
 Mode meanings:
 
-- Colouring: printable and digital colouring sheets, mandalas, lawful rings, overlaps, cells, and the colouring generator.
-- Constructions: composition/decomposition, animated reader plates, Plate Deck, and exhibitions.
-- Stills: images that are simply there: gallery stills, visual reservoirs, poster studies, downloads, and mined visual material.
+- Colouring: aesthetic appreciation of lawful colouring-style candidates first; later print, download, colour, or generate variants.
+- Constructions: aesthetic appreciation of lawful composition/decomposition plate candidates first; later keep, mine, or promote to reader/registry.
+- Stills: aesthetic appreciation of still visual candidates first; later keep, download, or promote to gallery/download routes.
 - Ordinary Website: the conventional route map for visitors who want the normal site architecture: gallery, field canvas, exhibitions, books, notes, workshops, and project pages.
 
 Current mode routes:
@@ -37,40 +37,83 @@ Stills -> modes/stills/
 Ordinary Website -> site/
 ```
 
-Mode-native pages now exist:
+Construction Mode remains available as a small builder link, but it is no longer the public organizing principle.
+
+## Governing Interaction Model: Tinder Appreciation Surface
+
+The three visual modes now share the same interaction grammar.
+
+The first experience is not making.
+
+The first experience is choosing.
+
+Each visual mode should present:
+
+```text
+one full-screen lawful candidate
+bottom × and ✓ controls
+swipe/pass/keep decision
+next candidate after decision
+kept drawer
+export taste
+SVG download when relevant
+```
+
+This applies to:
 
 ```text
 modes/colouring/index.html
 modes/constructions/index.html
 modes/stills/index.html
-site/index.html
 ```
 
-Construction Mode remains available as a small builder link, but it is no longer the public organizing principle.
+Shared Tinder shell:
+
+```text
+assets/js/mode-tinder.js
+```
+
+Mode adapters:
+
+```text
+assets/js/mode-colouring-tinder.js
+assets/js/mode-constructions-tinder.js
+assets/js/mode-stills-tinder.js
+```
+
+The point is aesthetic appreciation by decision. The user is not asked to understand the repository, select from a catalogue, or navigate a dashboard before seeing value.
+
+Colouring Mode does not mean user-as-child-with-crayon first. It means lawful colouring-style images are presented as candidates for appreciation. Making, printing, downloading, and colouring come after selection.
+
+Constructions Mode does not mean a list of plates. It means one construction fills the viewport and runs as a candidate for taste.
+
+Stills Mode does not mean a gallery grid first. It means one still fills the viewport and is judged.
+
+Ordinary Website is the only mode where conventional menus and route maps are appropriate.
 
 ## Native Mode Extraction
 
-The reservoirs are no longer only linked as file-like prototype pages. The first extraction pass has created native mode experiences.
+The reservoirs are no longer only linked as file-like prototype pages. Extraction has begun.
 
-Native mode engines:
+Native/source mode engines:
 
 ```text
 assets/js/mode-constructions.js
 assets/js/mode-stills.js
 ```
 
-Colouring Mode directly loads the colouring recipe/renderer scripts and immediately renders a preset lawful colouring sheet:
+Colouring Mode directly loads the colouring recipe/renderer scripts:
 
 ```text
 construction/recipes[1].js
 construction/renderer[1].js
 ```
 
-Constructions Mode now renders from `assets/js/mode-constructions.js` directly. It no longer uses an iframe to show the 120 Plate Reservoir.
+Constructions Mode renders from `assets/js/mode-constructions.js` through the Tinder adapter.
 
-Stills Mode now renders from `assets/js/mode-stills.js` directly. It no longer uses an iframe to show the Site Population Reservoir.
+Stills Mode renders from `assets/js/mode-stills.js` through the Tinder adapter.
 
-The prototype reservoirs remain valuable source material, but the public modes should increasingly use native Galway pages and shared engines rather than framed reservoir files.
+The prototype reservoirs remain valuable source material, but the public modes should increasingly use native Galway pages and shared engines rather than framed reservoir files or file-like lists.
 
 ## Construction Dashboard and Reservoir Mining
 
@@ -130,7 +173,7 @@ notes/lawful-visual-quality.md
 
 ## Reservoir and Generator Integration
 
-The following previously underpopulated routes are now wired to the population reservoir, visual reservoir index, generator, and/or native mode pages:
+The following routes are now wired to the population reservoir, visual reservoir index, generator, native mode pages, and/or Tinder mode pages:
 
 ```text
 workshops/colouring/index.html
@@ -172,7 +215,9 @@ field-canvas/export/
 Next extraction targets:
 
 - verify all four gateway routes open correctly;
+- test the Tinder shell on mobile and desktop;
 - patch Colouring Mode / renderer if any generated SVG appears blank or too faint;
+- add persistent taste storage if local session state is not sufficient;
 - permanent downloadable SVG sheets;
 - gallery still subsets;
 - colouring sheet pages;
@@ -181,107 +226,20 @@ Next extraction targets:
 - renderer modes for `assets/js/substrate-viewport.js`;
 - selected plates for `assets/js/plate-registry.js`.
 
-## Substrate Viewport Implementation
-
-The site has a shared substrate viewport renderer:
-
-```text
-assets/js/substrate-viewport.js
-```
-
-It uses the base field engine:
-
-```text
-assets/js/geometry-field.js
-```
-
-A page may declare a lawful viewport instead of hand-drawing a separate SVG preview:
-
-```html
-<div
-  class="preview"
-  data-substrate-viewport
-  data-view="field"
-  data-width="900"
-  data-height="420"
-  data-unit="72"
-  data-shells="5">
-</div>
-```
-
-The page chooses the window. The shared substrate draws the field, unit construction, stations, cells, and relation marks.
-
-Converted to substrate viewports so far:
-
-```text
-daily/index.html
-gallery/plate-stills/index.html
-gallery/mandalas/index.html
-gallery/tessellation-posters/index.html
-gallery/field-drawings/index.html
-gallery/community/index.html
-gallery/downloads/index.html
-books/theorem-zero-book-1/index.html
-books/theorem-zero-book-2/index.html
-books/construction-ledger/index.html
-books/companion/index.html
-books/visual-relations/index.html
-readers/plate-engine/index.html
-miscellaneous-visuals/index.html
-site/index.html
-```
-
-Remaining visual pages should be converted progressively, especially Exhibitions, other Readers routes, section roots, and notes HTML pages.
-
-## Plate System
-
-The project has the first version of a plate browsing and reader-selection system.
-
-Core files:
-
-```text
-assets/js/plate-registry.js
-assets/js/plate-deck.js
-assets/js/plate-reader-page.js
-plates/index.html
-readers/plate-engine/index.html
-```
-
-The plate registry contains coded plate records. These are instructions for the renderer, not visible explanations for the visitor.
-
-Each plate may include an authored `sequence`. A sequence is an ordered list of states such as:
-
-```js
-{ label: 'compose', view: 'field', hold: 1800 }
-```
-
-The Plate Deck page renders one still plate at a time through the substrate viewport system. The visitor can Pass, Keep, or Watch. Kept plates are stored locally in the browser for now.
-
-The Plate Engine reader route accepts selected plates from the deck using a query string:
-
-```text
-readers/plate-engine/?plate=diameter-study
-```
-
-The reader executes the selected plate's authored sequence when present. It falls back to a generic field-compose-relation-release loop only if a plate has no sequence.
-
-This establishes the split between:
-
-- Reader: executes the selected plate sequence.
-- Plate: coded instruction set for the reader/renderer.
-- Deck: still-card browsing and taste selection.
-- Viewport: visible aperture onto the lawful substrate.
-
 ## Current Status
 
-The repository now has a four-mode public gateway, native Colouring/Constructions/Stills mode pages, a normal website mode route, working navigation sections, shared styling, shared scripts, documentation, a custom 404, GitHub Pages support, a basic field canvas tool, a plate reader engine, repaired section roots, repaired child routes, a Daily Geometry prototype, a shared substrate viewport system, an initial Plate Deck, a registry-connected Plate Engine route, a Construction Mode dashboard behind the public front door, two major visual reservoirs, a Visual Reservoirs index, a Miscellaneous Visuals holding route, and a Colouring Generator wrapper.
+The repository now has a four-mode public gateway, Tinder-style Colouring/Constructions/Stills appreciation modes, a normal website mode route, shared styling, shared scripts, documentation, a custom 404, GitHub Pages support, a basic field canvas tool, a plate reader engine, repaired section roots, repaired child routes, a Daily Geometry prototype, a shared substrate viewport system, an initial Plate Deck, a registry-connected Plate Engine route, a Construction Mode dashboard behind the public front door, two major visual reservoirs, a Visual Reservoirs index, a Miscellaneous Visuals holding route, and a Colouring Generator wrapper.
 
 ## What Works Now
 
 - Home page is a four-mode gateway: Colouring, Constructions, Stills, Ordinary Website.
-- Colouring Mode exists at `modes/colouring/index.html` and renders a full-screen generated colouring sheet from recipe/renderer scripts.
-- Constructions Mode exists at `modes/constructions/index.html` and uses `assets/js/mode-constructions.js` natively.
-- Stills Mode exists at `modes/stills/index.html` and uses `assets/js/mode-stills.js` natively.
+- Colouring Mode exists at `modes/colouring/index.html` and is now a Tinder-style appreciation surface.
+- Constructions Mode exists at `modes/constructions/index.html` and is now a Tinder-style appreciation surface.
+- Stills Mode exists at `modes/stills/index.html` and is now a Tinder-style appreciation surface.
+- Shared Tinder shell exists at `assets/js/mode-tinder.js`.
+- Colouring Tinder adapter exists at `assets/js/mode-colouring-tinder.js`.
+- Constructions Tinder adapter exists at `assets/js/mode-constructions-tinder.js`.
+- Stills Tinder adapter exists at `assets/js/mode-stills-tinder.js`.
 - Ordinary Website Mode exists at `site/index.html`.
 - Visual Reservoirs index exists at `visual-reservoirs/index.html`.
 - Construction dashboard exists at `construction/index.html`.
@@ -304,7 +262,6 @@ The repository now has a four-mode public gateway, native Colouring/Construction
 - Substrate viewport renderer exists at `assets/js/substrate-viewport.js`.
 - Plate registry exists at `assets/js/plate-registry.js` and includes authored sequences.
 - Plate Deck exists at `plates/index.html`.
-- Plate Deck stills are rendered through the lawful substrate viewport.
 - Plate Reader page controller exists at `assets/js/plate-reader-page.js`.
 - Plate Engine route reads `?plate=<id>` and executes the selected plate sequence.
 - Daily Geometry static prototype exists at `daily/index.html` and uses a substrate viewport.
@@ -314,30 +271,42 @@ The repository now has a four-mode public gateway, native Colouring/Construction
 
 ## Known Risks
 
-1. Colouring Mode needs browser verification; if selected SVG appears blank or too faint, renderer visibility must be patched.
-2. The native Constructions and Stills engines are first-pass extractions, not full extractions of every reservoir capability.
-3. Reservoir pages are standalone prototypes; they should continue to be mined, not blindly merged.
-4. Plate sequences in the older Plate Engine still switch rendered states; they do not yet animate individual geometric primitives continuously inside one SVG timeline.
-5. The substrate viewport renderer has only a small set of visual views: `minimal`, `field`, `diameters`, and `catalogue`.
-6. Exhibitions and Readers prepared routes still need viewport conversion except where a true authored plate event is intended.
-7. Section roots and notes HTML pages may still carry independent inline SVG previews.
-8. Some generated child pages may still be thin and need richer visual content.
-9. `index.html` at site root is simple but still carries inline CSS rather than shared assets.
-10. The older `assets/js/plate-engine.js` is still only v0.1 and should be reconciled with the registry-connected reader route.
-11. The field canvas exports SVG, but PNG export, undo, save/load, and symmetry painting remain unfinished.
-12. Stable extracted downloadable SVG assets are not yet present as separate files.
+1. The Tinder shell needs browser verification across all three visual modes.
+2. Colouring Mode needs browser verification; if selected SVG appears blank or too faint, renderer visibility must be patched.
+3. The Tinder shell currently keeps choices in memory during the page session and exports JSON; persistent localStorage may be added next.
+4. The native Constructions and Stills engines are first-pass extractions, not full extractions of every reservoir capability.
+5. Reservoir pages are standalone prototypes; they should continue to be mined, not blindly merged.
+6. Plate sequences in the older Plate Engine still switch rendered states; they do not yet animate individual geometric primitives continuously inside one SVG timeline.
+7. The substrate viewport renderer has only a small set of visual views: `minimal`, `field`, `diameters`, and `catalogue`.
+8. Exhibitions and Readers prepared routes still need viewport conversion except where a true authored plate event is intended.
+9. Section roots and notes HTML pages may still carry independent inline SVG previews.
+10. Some generated child pages may still be thin and need richer visual content.
+11. `index.html` at site root is simple but still carries inline CSS rather than shared assets.
+12. The older `assets/js/plate-engine.js` is still only v0.1 and should be reconciled with the registry-connected reader route.
+13. The field canvas exports SVG, but PNG export, undo, save/load, and symmetry painting remain unfinished.
+14. Stable extracted downloadable SVG assets are not yet present as separate files.
 
 ## Immediate Next Work
 
-Priority 1: Verify and stabilize native modes.
+Priority 1: Verify and stabilize Tinder modes.
 
 - Test `modes/colouring/` in browser.
 - Test `modes/constructions/` in browser.
 - Test `modes/stills/` in browser.
+- Confirm pass/keep buttons advance candidates.
+- Confirm swipe gestures work.
+- Confirm kept drawer works.
+- Confirm SVG download works.
 - Patch any blank rendering, mobile layout, or path issues.
-- Decide whether to make Constructions route to the native mode or older Plate Deck from other pages.
 
-Priority 2: Mine the reservoirs into stable assets.
+Priority 2: Improve taste engine.
+
+- Add localStorage persistence for kept candidates.
+- Add a clearer review/export page for kept candidates.
+- Use kept/rejected choices to influence candidate order.
+- Add separate print/download actions for Colouring candidates.
+
+Priority 3: Mine the reservoirs into stable assets.
 
 - Extract permanent downloadable SVG sheets.
 - Extract a first gallery still subset.
@@ -347,7 +316,7 @@ Priority 2: Mine the reservoirs into stable assets.
 - Extract reusable renderer modes into `assets/js/substrate-viewport.js`.
 - Extract selected plates into `assets/js/plate-registry.js`.
 
-Priority 3: Continue lawful viewport conversion and cleanup.
+Priority 4: Continue lawful viewport conversion and cleanup.
 
 - Convert Exhibitions prepared routes to substrate viewport declarations where appropriate.
 - Convert Readers prepared routes to substrate viewport declarations where appropriate.
@@ -358,7 +327,9 @@ Priority 3: Continue lawful viewport conversion and cleanup.
 
 The first organizing principle is the four-mode gateway: Colouring, Constructions, Stills, Ordinary Website.
 
-The mode pages should be experiences, not file listings and not framed reservoir pages.
+The second organizing principle is the Tinder appreciation surface for visual modes.
+
+The visual mode pages should be decision experiences, not file listings, not framed reservoir pages, and not dashboards.
 
 Do not let the site collapse back into an overgrown list of routes.
 
@@ -384,4 +355,4 @@ The user strongly prefers momentum. When using the GitHub connector, proceed wit
 
 ## Short Continuation Prompt For A New Conversation
 
-You are continuing work on `TitanicParker/Galway-Geometry`, an all-HTML GitHub Pages site created by a GPT user with ChatGPT as development partner. The public home page is a four-mode gateway: Colouring, Constructions, Stills, Ordinary Website. This is the governing organizing principle. Mode pages should be native experiences, not file listings and not framed reservoir pages. Start from `index.html`, `modes/colouring/index.html`, `modes/constructions/index.html`, `modes/stills/index.html`, `assets/js/mode-constructions.js`, `assets/js/mode-stills.js`, `site/index.html`, `visual-reservoirs/index.html`, `construction/index.html`, the two reservoir HTML files, `miscellaneous-visuals/index.html`, `PROJECT_STATUS.md`, `notes/management-plan.md`, `notes/site-architecture.md`, and `notes/lawful-visual-quality.md`. Preserve the user's public direction: Galway Geometry is a practical/aesthetic visual geometry site for geometric art, mandalas, tessellations, colouring, field drawing, visual exhibitions, plate browsing, and deeper constructional geometry. Do not turn the public front page into a theorem manifesto. Do not let the site collapse back into an overgrown list of routes. Confirm that no geometry image betrays the lawful substrate. Continue from the current priorities: verify/stabilize native modes, fix/promote Colouring Generator, mine reservoirs into stable assets, continue lawful viewport conversion, prepare public v1 cleanup.
+You are continuing work on `TitanicParker/Galway-Geometry`, an all-HTML GitHub Pages site created by a GPT user with ChatGPT as development partner. The public home page is a four-mode gateway: Colouring, Constructions, Stills, Ordinary Website. This is the governing organizing principle. The three visual modes are Tinder-style appreciation surfaces: one full-screen lawful candidate, bottom ×/✓ decision controls, kept drawer, export taste, SVG download. Start from `index.html`, `modes/colouring/index.html`, `modes/constructions/index.html`, `modes/stills/index.html`, `assets/js/mode-tinder.js`, `assets/js/mode-colouring-tinder.js`, `assets/js/mode-constructions-tinder.js`, `assets/js/mode-stills-tinder.js`, `assets/js/mode-constructions.js`, `assets/js/mode-stills.js`, `site/index.html`, `visual-reservoirs/index.html`, `construction/index.html`, the two reservoir HTML files, `miscellaneous-visuals/index.html`, `PROJECT_STATUS.md`, `notes/management-plan.md`, `notes/site-architecture.md`, and `notes/lawful-visual-quality.md`. Preserve the user's public direction: Galway Geometry is a practical/aesthetic visual geometry site for geometric art, mandalas, tessellations, colouring, field drawing, visual exhibitions, plate browsing, and deeper constructional geometry. Do not turn the public front page into a theorem manifesto. Do not let the site collapse back into an overgrown list of routes. Do not make visual modes into dashboards. Confirm that no geometry image betrays the lawful substrate. Continue from the current priorities: verify/stabilize Tinder modes, improve taste engine persistence, mine reservoirs into stable assets, continue lawful viewport conversion, prepare public v1 cleanup.
