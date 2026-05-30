@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Galway Geometry — Site Population Reservoir</title>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#02050b;--ink:#f2fbff;--muted:rgba(242,251,255,.66);--quiet:rgba(242,251,255,.42);
+  --line:rgba(255,255,255,.15);--panel:rgba(3,7,15,.66);--panel2:rgba(255,255,255,.07);
+  --cyan:#aeefff;--mint:#9fffe0;--gold:#ffe08a;--rose:#ff8ca4;--violet:#d7c8ff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#02050b;color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+body{overflow-x:hidden;background:radial-gradient(circle at 18% 8%,rgba(174,239,255,.16),transparent 32rem),radial-gradient(circle at 82% 14%,rgba(255,140,164,.12),transparent 28rem),linear-gradient(145deg,#020408,#06111a 45%,#02050b)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(174,239,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(174,239,255,.035) 1px,transparent 1px);background-size:38px 38px;mask-image:radial-gradient(circle at 50% 18%,black,transparent 76%)}
+a,button,select{font:inherit}
+.shell{width:min(1380px,calc(100% - 32px));margin:0 auto;position:relative}
+.top{position:sticky;top:0;z-index:20;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(2,5,11,.92),rgba(2,5,11,.55));backdrop-filter:blur(18px)}
+.nav{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0}
+.brand{display:flex;gap:12px;align-items:center}.brand-mark{width:36px;height:36px;border-radius:999px;border:1px solid rgba(242,251,255,.28);display:grid;place-items:center;background:radial-gradient(circle,rgba(159,255,224,.18),rgba(174,239,255,.06));box-shadow:0 0 32px rgba(159,255,224,.10)}.brand-mark svg{width:24px;height:24px}.brand strong{text-transform:uppercase;letter-spacing:.06em;font-size:15px}.brand span{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.controls{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}
+button,select{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.055);color:var(--ink);padding:10px 11px;border-radius:999px;font-size:11px;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;outline:none}
+button:hover,select:hover{border-color:rgba(174,239,255,.55);box-shadow:0 0 28px rgba(174,239,255,.10)}
+.hero{padding:42px 0 20px;display:grid;grid-template-columns:minmax(0,.9fr) minmax(420px,1.1fr);gap:24px;align-items:stretch}
+.copy{border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025));border-radius:30px;padding:24px;box-shadow:0 28px 80px rgba(0,0,0,.32)}
+.kicker{margin:0 0 12px;color:var(--cyan);font-size:11px;text-transform:uppercase;letter-spacing:.22em}
+h1{margin:0;font-size:clamp(38px,5.8vw,92px);line-height:.9;letter-spacing:-.07em;text-transform:uppercase}
+.copy p{margin:18px 0 0;color:var(--muted);font-size:15px;line-height:1.65;max-width:76ch}
+.viewer{border:1px solid var(--line);border-radius:30px;overflow:hidden;background:#02070c;min-height:520px;position:sticky;top:92px;box-shadow:0 28px 90px rgba(0,0,0,.38)}
+#preview{display:block;width:100%;height:520px;background:#02070c}
+.viewer-meta{position:absolute;left:14px;right:14px;bottom:14px;border:1px solid rgba(255,255,255,.14);background:rgba(2,5,11,.66);backdrop-filter:blur(16px);padding:12px;border-radius:18px}
+.viewer-meta h2{margin:0 0 7px;font-size:24px;letter-spacing:-.04em}.viewer-meta p{margin:0;color:var(--muted);line-height:1.5;font-size:12px}.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.tag{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.05);padding:4px 7px;border-radius:999px;color:rgba(242,251,255,.72);font-size:10px;text-transform:uppercase;letter-spacing:.07em}
+.section{padding:42px 0 18px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:16px}h3{margin:0;font-size:clamp(28px,4vw,56px);line-height:.95;letter-spacing:-.06em}.section-head p{margin:0;color:var(--muted);max-width:560px;line-height:1.55;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.card{border:1px solid rgba(255,255,255,.13);background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.025));border-radius:22px;overflow:hidden;cursor:pointer;min-height:226px;display:flex;flex-direction:column;transition:.18s ease}.card:hover{transform:translateY(-2px);border-color:rgba(174,239,255,.42)}.card.active{border-color:rgba(174,239,255,.9);box-shadow:0 0 32px rgba(174,239,255,.15)}
+.thumb{height:142px;background:#02070c}.thumb svg{display:block;width:100%;height:100%}.card-body{padding:11px}.card-body h4{margin:0 0 7px;font-size:13px;line-height:1.25}.card-body p{margin:0;color:var(--quiet);font-size:10px;line-height:1.45}.mini-tags{margin-top:8px;display:flex;gap:5px;flex-wrap:wrap}.mini-tags span{font-size:9px;color:rgba(242,251,255,.58);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:3px 5px}
+.sheet-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.download-button{border-color:rgba(159,255,224,.32);background:rgba(159,255,224,.08)}
+.footer{padding:48px 0 70px;color:var(--quiet);font-size:12px;line-height:1.7}
+@media(max-width:1180px){.grid{grid-template-columns:repeat(4,1fr)}.hero{grid-template-columns:1fr}.viewer{position:relative;top:auto}}
+@media(max-width:840px){.grid{grid-template-columns:repeat(2,1fr)}.nav{display:block}.controls{justify-content:flex-start;margin-top:10px}.hero{padding-top:24px}.viewer{min-height:420px}#preview{height:420px}}
+@media(max-width:520px){.grid{grid-template-columns:1fr}.shell{width:calc(100% - 20px)}button,select{font-size:10px;padding:9px}.copy,.viewer{border-radius:22px}}
+@media(prefers-reduced-motion:reduce){.card:hover{transform:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="shell nav">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 100 100"><polygon points="50,8 86,29 86,71 50,92 14,71 14,29" fill="none" stroke="currentColor" stroke-width="6"/><path d="M50 8v84M14 29l72 42M86 29 14 71" stroke="currentColor" stroke-width="4" opacity=".65"/></svg></span>
+      <div><strong>Galway Geometry</strong><span>site population reservoir</span></div>
+    </div>
+    <div class="controls">
+      <select id="sectionSelect"></select>
+      <select id="modeSelect"></select>
+      <button id="prev">Previous</button>
+      <button id="next">Next</button>
+      <button id="runtime">Runtime</button>
+      <button id="exportSvg">Export Selected SVG</button>
+    </div>
+  </div>
+</header>
+
+<main class="shell">
+  <section class="hero">
+    <article class="copy">
+      <p class="kicker">Lawful visual assets · HTML / SVG / JS</p>
+      <h1>Population Reservoir</h1>
+      <p>This file is a mineable asset library for gallery routes, colouring pages, tessellation downloads, exhibitions, daily geometry, construction mode, plate deck, reader surfaces, and field-canvas previews. Geometry is generated from the same axial field, stations, cells, rings, chords, equal-radius circles, and lawful repetitions.</p>
+      <div class="tags" id="counts"></div>
+    </article>
+    <aside class="viewer">
+      <svg id="preview" role="img" aria-label="Selected lawful Galway Geometry visual asset"></svg>
+      <div class="viewer-meta">
+        <h2 id="assetTitle">Loading</h2>
+        <p id="assetDesc"></p>
+        <div class="tags" id="assetTags"></div>
+      </div>
+    </aside>
+  </section>
+
+  <div id="sections"></div>
+
+  <footer class="footer">
+    Galway Geometry · lawful visual asset reservoir · generated with substrate view modes ready to mine into shared renderers.
+  </footer>
+</main>
+
+<script>
+(function(){
+"use strict";
+
+var NS="http://www.w3.org/2000/svg",SQRT3=Math.sqrt(3),TAU=Math.PI*2;
+var preview=document.getElementById("preview"),sectionsEl=document.getElementById("sections");
+var selected=0,runtime=true,clock=0,assets=[],thumbLimit=170;
+var paletteMap={
+  glass:{bg:"#020916",bg2:"#06182b",a:"#aeefff",b:"#ff8ce8",c:"#ffffff",d:"#112b45"},
+  aurora:{bg:"#02040d",bg2:"#071d27",a:"#73ffdb",b:"#bd63ff",c:"#f2ffff",d:"#132045"},
+  chalk:{bg:"#f7fbff",bg2:"#e9eef4",a:"#081018",b:"#26384a",c:"#000000",d:"#d9e1eb"},
+  chalkDark:{bg:"#03050a",bg2:"#0f141d",a:"#eefaff",b:"#9fb8c8",c:"#ffffff",d:"#1b2029"},
+  ember:{bg:"#090403",bg2:"#261006",a:"#ffd36b",b:"#ff794f",c:"#fff0c2",d:"#3a1c0b"},
+  lichen:{bg:"#020806",bg2:"#06251a",a:"#98ffbf",b:"#29d6a5",c:"#e8fff2",d:"#123e2b"},
+  signal:{bg:"#070308",bg2:"#190409",a:"#ff4e70",b:"#ffd36b",c:"#ffe9ee",d:"#301019"},
+  gold:{bg:"#090704",bg2:"#191306",a:"#ffe08a",b:"#b9f7ff",c:"#fff7d6",d:"#372b0a"},
+  lunar:{bg:"#03040b",bg2:"#0b1020",a:"#d6e3ff",b:"#7df9ff",c:"#ffffff",d:"#141a2d"},
+  print:{bg:"#ffffff",bg2:"#ffffff",a:"#111111",b:"#111111",c:"#111111",d:"#ffffff"},
+  blue:{bg:"#020611",bg2:"#071d31",a:"#79f7ff",b:"#5fa8ff",c:"#e9fdff",d:"#113554"}
+};
+var sectionOrder=[
+  "Tessellation Assets","Colouring Assets","Gallery Assets","Exhibition Assets","Daily Geometry Assets",
+  "Construction Mode Assets","Downloadable SVG Sheets","Renderer View Modes"
+];
+var routeBySection={
+  "Tessellation Assets":"workshops/tessellations/",
+  "Colouring Assets":"workshops/colouring/",
+  "Gallery Assets":"gallery/",
+  "Exhibition Assets":"exhibitions/",
+  "Daily Geometry Assets":"daily/",
+  "Construction Mode Assets":"construction/",
+  "Downloadable SVG Sheets":"gallery/downloads/",
+  "Renderer View Modes":"assets/js/substrate-viewport.js"
+};
+
+function e(tag,attrs,parent){var n=document.createElementNS(NS,tag);Object.keys(attrs||{}).forEach(function(k){if(attrs[k]!=null)n.setAttribute(k,attrs[k]);});(parent||preview).appendChild(n);return n;}
+function g(attrs,parent){return e("g",attrs,parent);}
+function line(a,b,attrs,parent){return e("line",Object.assign({x1:a.x,y1:a.y,x2:b.x,y2:b.y},attrs),parent);}
+function circle(p,r,attrs,parent){return e("circle",Object.assign({cx:p.x,cy:p.y,r:r},attrs),parent);}
+function poly(pts,attrs,parent){return e("polygon",Object.assign({points:pts.map(function(p){return p.x.toFixed(2)+","+p.y.toFixed(2)}).join(" ")},attrs),parent);}
+function path(pts,attrs,parent,close){return e("path",Object.assign({d:pts.map(function(p,i){return(i?"L":"M")+p.x.toFixed(2)+" "+p.y.toFixed(2)}).join(" ")+(close?" Z":"")},attrs),parent);}
+function txt(x,y,s,attrs,parent){var t=e("text",Object.assign({x:x,y:y},attrs||{}),parent);t.textContent=s;return t;}
+function defs(svg){var d=e("defs",{},svg);return d;}
+function addGradient(d,id,pal){var lg=e("linearGradient",{id:id,x1:"0%",y1:"0%",x2:"100%",y2:"100%"},d);e("stop",{offset:"0%","stop-color":pal.bg},lg);e("stop",{offset:"52%","stop-color":pal.bg2},lg);e("stop",{offset:"100%","stop-color":pal.bg},lg);var rg=e("radialGradient",{id:id+"Mist",cx:"50%",cy:"50%",r:"68%"},d);e("stop",{offset:"0%","stop-color":pal.a,"stop-opacity":.25},rg);e("stop",{offset:"50%","stop-color":pal.b,"stop-opacity":.08},rg);e("stop",{offset:"100%","stop-color":pal.bg,"stop-opacity":0},rg);var f=e("filter",{id:id+"Glow",x:"-80%",y:"-80%",width:"260%",height:"260%"},d);e("feGaussianBlur",{stdDeviation:3,result:"b"},f);var m=e("feMerge",{},f);e("feMergeNode",{in:"b"},m);e("feMergeNode",{in:"SourceGraphic"},m);}
+function substrate(width,height,unit,rot,ox,oy){
+  var c=Math.cos(rot||0),s=Math.sin(rot||0); ox=ox==null?width/2:ox; oy=oy==null?height/2:oy;
+  function P(q,r){var x=unit*(q+r/2),y=-unit*(r*SQRT3/2);return{x:ox+x*c-y*s,y:oy+x*s+y*c,q:q,r:r};}
+  return{P:P,unit:unit,stationQR:[[-1,0],[-1,1],[0,1],[1,0],[1,-1],[0,-1]],stations:function(){return this.stationQR.map(function(v){return P(v[0],v[1]);});}};
+}
+function dist(q,r){return Math.max(Math.abs(q),Math.abs(r),Math.abs(q+r));}
+function ring(n){if(n===0)return[[0,0]];var dirs=[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]],out=[],q=-n,r=0;for(var side=0;side<6;side++)for(var i=0;i<n;i++){out.push([q,r]);q+=dirs[side][0];r+=dirs[side][1];}return out;}
+function rectPoints(S,width,height,margin){var range=Math.ceil(Math.max(width,height)/S.unit*1.45)+(margin||2),out=[];for(var q=-range;q<=range;q++)for(var r=-range;r<=range;r++){var p=S.P(q,r);if(p.x>-S.unit*(margin||2)&&p.x<width+S.unit*(margin||2)&&p.y>-S.unit*(margin||2)&&p.y<height+S.unit*(margin||2))out.push(p);}return out;}
+function tri(S,q,r,up){var a=S.P(q,r),b=S.P(q+1,r),c=S.P(q,r+1),d=S.P(q+1,r-1);return up?[a,b,c]:[a,d,b];}
+function hex(S,q,r,scale){scale=scale||1;return[[-1,0],[-1,1],[0,1],[1,0],[1,-1],[0,-1]].map(function(v){return S.P(q+v[0]*scale,r+v[1]*scale);});}
+function prepare(svg,width,height,pal,print){
+  svg.replaceChildren();svg.setAttribute("viewBox","0 0 "+width+" "+height);
+  var d=defs(svg);addGradient(d,"p",pal);
+  e("rect",{width:width,height:height,fill:print?pal.bg:"url(#p)"},svg);
+  if(!print){circle({x:width*.24,y:height*.75},Math.max(width,height)*.45,{fill:"url(#pMist)",opacity:.72},svg);circle({x:width*.78,y:height*.23},Math.max(width,height)*.35,{fill:"url(#pMist)",opacity:.5},svg);}
+}
+function drawLattice(svg,S,width,height,pal,opt){
+  opt=opt||{};var gg=g({fill:"none","stroke-linecap":"round",opacity:opt.opacity==null?1:opt.opacity},svg);
+  rectPoints(S,width,height,3).forEach(function(p){
+    var dd=dist(p.q,p.r), op=Math.max(.035,(opt.lineOpacity||.18)-dd*.008);
+    if(opt.lines!==false)[[1,0],[0,1],[1,-1]].forEach(function(v,i){var b=S.P(p.q+v[0],p.r+v[1]);if(b.x>-S.unit*3&&b.x<width+S.unit*3&&b.y>-S.unit*3&&b.y<height+S.unit*3)line(p,b,{stroke:opt.mono?pal.a:[pal.a,pal.b,pal.c][i%3],"stroke-width":opt.lw||.6,"stroke-opacity":op},gg);});
+    if(opt.points)circle(p,opt.pr||S.unit*.018,{fill:pal.c,opacity:Math.max(.08,.4-dd*.018)},gg);
+  });
+}
+function drawStations(svg,S,pal,opt){opt=opt||{};var gg=g({filter:opt.glow?"url(#pGlow)":null},svg);S.stations().forEach(function(p,i){circle(p,opt.r||S.unit*.052,{fill:opt.fill||pal.a,opacity:opt.opacity||.9},gg);});return gg;}
+function drawAxes(svg,S,pal,opt){opt=opt||{};var st=S.stations(),gg=g({filter:opt.glow?"url(#pGlow)":null},svg);[[0,3],[1,4],[2,5]].forEach(function(ab,i){line(st[ab[0]],st[ab[1]],{stroke:[pal.a,pal.b,pal.c][i],"stroke-width":opt.w||1.3,opacity:opt.opacity||.65},gg);});}
+function drawRings(svg,S,pal,nmax,opt){opt=opt||{};var gg=g({fill:"none","stroke-linejoin":"round",filter:opt.glow?"url(#pGlow)":null},svg);for(var n=1;n<=nmax;n++){path(ring(n).map(function(v){return S.P(v[0]*(opt.scale||1),v[1]*(opt.scale||1));}),{stroke:n%2?pal.a:pal.b,"stroke-width":opt.w||1,"stroke-opacity":Math.max(.08,(opt.opacity||.52)-n*.035)},gg,true);}return gg;}
+function drawCells(svg,S,pal,lim,opt){opt=opt||{};var gg=g({filter:opt.glow?"url(#pGlow)":null},svg);for(var q=-lim;q<=lim;q++)for(var r=-lim;r<=lim;r++){var d=dist(q,r);if(d>lim)continue;if(opt.rule&&!opt.rule(q,r,d))continue;[true,false].forEach(function(up,k){poly(tri(S,q,r,up),{fill:opt.fill==="none"?"none":(k?pal.a:pal.b),"fill-opacity":opt.fillOpacity==null?.07:opt.fillOpacity,stroke:opt.stroke||pal.c,"stroke-width":opt.w||.45,"stroke-opacity":opt.strokeOpacity==null?.35:opt.strokeOpacity},gg);});}return gg;}
+function drawFieldCircles(svg,S,pal,nmax,opt){opt=opt||{};var gg=g({fill:"none",filter:opt.glow?"url(#pGlow)":null},svg);for(var n=0;n<=nmax;n++)ring(n).forEach(function(v,i){if(opt.skip&&opt.skip(v,n,i))return;circle(S.P(v[0],v[1]),S.unit*(opt.radius||1),{stroke:(i+n)%2?pal.a:pal.b,"stroke-width":opt.w||.65,"stroke-opacity":Math.max(.035,(opt.opacity||.34)-n*.025)},gg);});return gg;}
+function drawChords(svg,S,pal,opt){opt=opt||{};var st=S.stations(),gg=g({filter:opt.glow?"url(#pGlow)":null},svg);for(var a=0;a<6;a++)for(var b=a+1;b<6;b++){if(opt.rule&&!opt.rule(a,b))continue;line(st[a],st[b],{stroke:(a+b)%2?pal.a:pal.b,"stroke-width":opt.w||.85,opacity:opt.opacity||.42},gg);}return gg;}
+function drawFirst(svg,S,pal,opt){opt=opt||{};var gg=g({filter:opt.glow?"url(#pGlow)":null},svg);circle(S.P(0,0),S.unit,{fill:"none",stroke:pal.a,"stroke-width":opt.w||1.8,opacity:opt.opacity||.82},gg);drawStations(svg,S,pal,{r:opt.stationR||S.unit*.04,glow:opt.glow,opacity:.86});return gg;}
+
+var Modes={
+  "triangle-grid":function(svg,S,w,h,p){drawCells(svg,S,p,12,{fill:"none",stroke:p.a,w:.55,strokeOpacity:.42});},
+  "hex-grid":function(svg,S,w,h,p){var gg=g({fill:"none"},svg);rectPoints(S,w,h,2).forEach(function(pt){if((pt.q-pt.r)%3===0)path(hex(S,pt.q,pt.r,.5),{stroke:p.a,"stroke-width":.58,"stroke-opacity":.42},gg,true);});},
+  "dense-field":function(svg,S,w,h,p){drawLattice(svg,S,w,h,p,{opacity:1,lw:.55,points:true,pr:S.unit*.012});},
+  "quiet-field":function(svg,S,w,h,p){drawLattice(svg,S,w,h,p,{opacity:.65,lw:.45,points:false,mono:true});drawFirst(svg,S,p,{w:1.25,opacity:.55});},
+  "poster":function(svg,S,w,h,p){drawRings(svg,S,p,6,{w:1.3,glow:true});drawAxes(svg,S,p,{w:3,opacity:.5,glow:true});drawFirst(svg,S,p,{w:2.4,glow:true});},
+  "mandala":function(svg,S,w,h,p){drawFieldCircles(svg,S,p,3,{radius:1,opacity:.28,glow:true});drawRings(svg,S,p,5,{w:1.1,glow:true});drawChords(svg,S,p,{rule:function(a,b){return(a+b)%2===0},opacity:.38,glow:true});drawFirst(svg,S,p,{glow:true});},
+  "overlap":function(svg,S,w,h,p){drawFieldCircles(svg,S,p,4,{radius:1,opacity:.28,glow:true});drawFirst(svg,S,p,{glow:true});},
+  "hex-only":function(svg,S,w,h,p){drawRings(svg,S,p,7,{w:1.1,glow:true});for(var n=1;n<=4;n++)path(hex(S,0,0,n),{fill:"none",stroke:n%2?p.a:p.b,"stroke-width":1.2,opacity:.55},svg,true);},
+  "rings":function(svg,S,w,h,p){for(var n=1;n<=9;n++)circle(S.P(0,0),S.unit*n,{fill:"none",stroke:n%2?p.a:p.b,"stroke-width":n===1?2:1,"stroke-opacity":Math.max(.08,.5-n*.04),filter:"url(#pGlow)"},svg);drawStations(svg,S,p,{glow:true});},
+  "cell-field":function(svg,S,w,h,p){drawCells(svg,S,p,9,{fillOpacity:.09,strokeOpacity:.28,glow:true});drawFirst(svg,S,p,{glow:true});},
+  "glass":function(svg,S,w,h,p){drawCells(svg,S,p,7,{fillOpacity:.055,strokeOpacity:.22});drawFieldCircles(svg,S,p,3,{radius:1,opacity:.22,glow:true});drawRings(svg,S,p,4,{glow:true});},
+  "chalk":function(svg,S,w,h,p){drawLattice(svg,S,w,h,p,{lw:.7,points:false,mono:true});drawFirst(svg,S,p,{w:1.6});drawChords(svg,S,p,{opacity:.28,w:.75});},
+  "aurora":function(svg,S,w,h,p){drawFieldCircles(svg,S,p,5,{radius:.8,opacity:.22,glow:true});drawCells(svg,S,p,6,{fillOpacity:.04,strokeOpacity:.12});drawRings(svg,S,p,4,{glow:true});},
+  "lattice-weather":function(svg,S,w,h,p){rectPoints(S,w,h,2).forEach(function(pt){var a=(Math.sin((pt.q-pt.r)*.9+clock*.04)+1)/2;circle(pt,S.unit*(.009+.03*a),{fill:a>.5?p.a:p.b,opacity:.08+.5*a,filter:"url(#pGlow)"},svg);});drawLattice(svg,S,w,h,p,{opacity:.36,lw:.35,points:false});},
+  "circle-interference":function(svg,S,w,h,p){drawFieldCircles(svg,S,p,6,{radius:1,opacity:.23,w:.55,glow:true});drawFieldCircles(svg,S,p,3,{radius:.5,opacity:.28,w:.65});},
+  "cathedral-field":function(svg,S,w,h,p){drawLattice(svg,S,w,h,p,{opacity:.7,lw:.5,points:false});[1,2,3,5].forEach(function(n){path(hex(S,0,0,n),{fill:n===3?p.d:"none","fill-opacity":.12,stroke:n%2?p.a:p.b,"stroke-width":1.2,opacity:.5,filter:"url(#pGlow)"},svg,true);});drawAxes(svg,S,p,{w:1.8,opacity:.42,glow:true});},
+  "coastal-net":function(svg,S,w,h,p){rectPoints(S,w,h,2).forEach(function(pt){if(pt.y<h*.24||pt.y>h*.93)return;[[1,0],[0,1],[1,-1]].forEach(function(v,i){var b=S.P(pt.q+v[0],pt.r+v[1]);if(b.y>h*.24&&b.y<h*.93)line(pt,b,{stroke:i?p.b:p.a,"stroke-width":.6,opacity:.16},svg);});});drawFirst(svg,S,p,{w:1.2,opacity:.48});},
+  "colouring-mandala":function(svg,S,w,h,p){drawFieldCircles(svg,S,p,3,{radius:1,opacity:.9,w:1});drawRings(svg,S,p,6,{w:1,opacity:.85});drawChords(svg,S,p,{opacity:.75,w:.9});drawFirst(svg,S,p,{w:1.4,opacity:1});},
+  "colouring-cells":function(svg,S,w,h,p){drawCells(svg,S,p,7,{fill:"none",stroke:p.a,w:.75,strokeOpacity:.85});drawFirst(svg,S,p,{w:1.2,opacity:.85});},
+  "colouring-overlap":function(svg,S,w,h,p){drawFieldCircles(svg,S,p,3,{radius:1,opacity:.85,w:1});drawRings(svg,S,p,4,{w:1,opacity:.75});},
+  "daily-simple":function(svg,S,w,h,p){drawFirst(svg,S,p,{w:2,opacity:.88,glow:true});drawAxes(svg,S,p,{w:1.1,opacity:.34});drawRings(svg,S,p,2,{w:1,opacity:.3});}
+};
+
+var modeNames=Object.keys(Modes);
+
+function addAsset(o){
+  o.draw=Modes[o.mode]||Modes["quiet-field"];
+  assets.push(o);
+}
+
+function makeId(prefix,i){return prefix+"-"+String(i).padStart(3,"0");}
+
+var tessModes=["triangle-grid","hex-grid","dense-field","quiet-field","poster","cell-field","cathedral-field","coastal-net","hex-grid","triangle-grid"];
+var tessTitles=["A4 Triangle Field","A4 Hex Field","Dense Workshop Grid","Sparse Classroom Field","Poster Tessellation","Cell Field Ground","Cathedral Grid","Coastal Net Sheet","Honeycomb Poster","Triangle Poster","Large Hex Classroom","Fine Triangle Draft","Blue Field Background","Gold Hex Background","Lichen Cell Sheet","Signal Poster Grid","Quiet Teaching Grid","Dense Print Field","Wide Horizon Grid","Mandala Ground Grid"];
+for(var i=1;i<=20;i++) addAsset({
+  id:makeId("TES",i),title:tessTitles[i-1],intendedRoute:i%3===0?"field-canvas/tessellations/":"workshops/tessellations/",
+  family:"Tessellation Assets",mode:tessModes[(i-1)%tessModes.length],palette:i%5===0?"gold":i%4===0?"lichen":i%3===0?"blue":i%2===0?"print":"chalk",
+  stillDescription:"Lawful tessellation field generated from triangular lattice cells and hex relations.",
+  runtimeIdea:"Fade lattice lines in by axial direction, hold as a printable field, then reveal first circle reference marks.",
+  printable:true,exportable:true
+});
+
+var colourModes=["colouring-mandala","colouring-cells","colouring-overlap","triangle-grid","hex-grid","rings","hex-only","quiet-field"];
+var colourTitles=["First Circle Colouring","Six Station Mandala","Overlap Circle Sheet","Triangle Cell Colouring","Hex Ring Colouring","Ring System Colouring","Quiet Hex Study","Field Colouring Ground","Station Flower Sheet","Vesica Colouring Study","Large Cell Sheet","Small Cell Sheet","Diameter Colouring","Mandala Ring Sheet","Circle Interference Colouring","Hex Crown Sheet","Triangle Rosette","Sparse Field Sheet","Dense Field Colouring","Silent Unit Sheet"];
+for(i=1;i<=20;i++) addAsset({
+  id:makeId("COL",i),title:colourTitles[i-1],intendedRoute:"workshops/colouring/",
+  family:"Colouring Assets",mode:colourModes[(i-1)%colourModes.length],palette:"print",
+  stillDescription:"Black-line lawful colouring sheet built from stations, rings, cells, chords, and equal-radius circles.",
+  runtimeIdea:"Optional web preview may softly tint lawful regions without changing the line geometry.",
+  printable:true,exportable:true
+});
+
+var galleryModes=["mandala","poster","glass","aurora","cell-field","circle-interference","cathedral-field","coastal-net","rings","overlap"];
+var galleryTitles=["Aurora Mandala Still","Gold Poster Field","Glass Plate Still","Lunar Circle Weather","Cell Choir Still","Interference Sea","Cathedral Lattice Still","Coastal Net Drawing","Ring System Poster","Station Overlap Still","Blue Mandala","Signal Plate Still","Lichen Field Drawing","Chalk Night Geometry","Ember Hex Poster","Glass Tessellation Still","Community Mandala Example","Download Preview Field","Plate Still: Diameter","Plate Still: Six Stations","Gallery Crown","Misty Field Drawing","Golden Cell Poster","Overlap Moon Study","Quiet Centre Still","Hex Nave Still","Radial Bloom Still","Tessellation Poster Still","Community Field Example","White-on-Black Study"];
+for(i=1;i<=30;i++) addAsset({
+  id:makeId("GAL",i),title:galleryTitles[i-1],intendedRoute:["gallery/mandalas/","gallery/tessellation-posters/","gallery/field-drawings/","gallery/plate-stills/","gallery/downloads/","gallery/community/"][(i-1)%6],
+  family:"Gallery Assets",mode:galleryModes[(i-1)%galleryModes.length],palette:["aurora","gold","glass","lunar","lichen","signal","blue","chalkDark","ember","mist"][(i-1)%10],
+  stillDescription:"Polished still for public gallery population, generated from lawful centres and field relations.",
+  runtimeIdea:"Deck preview can breathe opacity and stroke-dash timing while preserving all coordinates.",
+  printable:false,exportable:true
+});
+
+var exhibitionModes=["aurora","cathedral-field","circle-interference","poster","glass","dense-field","mandala","coastal-net","lattice-weather","rings"];
+var exhibitionTitles=["Aurora Field Theatre","Cathedral Substrate","Interference Chamber","Signal Poster Room","Glass Monastery Field","Dense Electric Field","Mandala Ritual View","Coastal Net Horizon","Lattice Weather Wall","Ring System Theatre","Blue Immersion","Gold Chamber","Lunar Overlap Room","Hex Nave Theatre","Cell Field Cinema","Quiet Vastness","Station Bloom Room","Circle Sea Exhibition","Chalk Night Theatre","Signal Crown Hall"];
+for(i=1;i<=20;i++) addAsset({
+  id:makeId("EXH",i),title:exhibitionTitles[i-1],intendedRoute:"exhibitions/",
+  family:"Exhibition Assets",mode:exhibitionModes[(i-1)%exhibitionModes.length],palette:["aurora","chalkDark","lunar","signal","glass","blue","ember","lichen","gold","mist"][(i-1)%10],
+  stillDescription:"Immersive full-viewport exhibition still using lawful field scale, rings, stations, and overlap systems.",
+  runtimeIdea:"Slow compose / hold / dissolve sequence with mist, glow, and stroke reveal across lawful primitives.",
+  printable:false,exportable:true
+});
+
+var dailyPrompts=[
+"Light the first circle and let the six stations hold the edge.",
+"Draw three diameters between opposite stations.",
+"Fill one ring with quiet triangle cells.",
+"Let equal-radius station circles overlap at the centre.",
+"Hold a single hexagon in a wide field.",
+"Reveal the lattice as morning mist.",
+"Show a sparse ring map around P(0,0).",
+"Make the six stations pulse like small lamps.",
+"Draw a coastal net from lawful neighbour edges.",
+"Place the first circle inside a chalk field.",
+"Let hex rings form a small crown.",
+"Use only chords between station points.",
+"Fill alternating equilateral cells.",
+"Draw a white-on-black mandala from lawful rings.",
+"Let circle interference occupy the field.",
+"Show a quiet origin and no extra drama.",
+"Build a poster from diameters and rings.",
+"Make the first circle glow under glass.",
+"Reveal only every third lattice point.",
+"Draw the field as rain.",
+"Use an ember palette for a hex relation.",
+"Use lichen tones for a cell field.",
+"Use lunar tones for overlaps.",
+"Use gold for a printable poster field.",
+"Build a sixfold radial bloom.",
+"Draw one large lawful triangle.",
+"Draw nested hexagons from station scale.",
+"Show the unit circle as a gate.",
+"Let lattice weather pass through points.",
+"Make a classroom triangle sheet.",
+"Make a small mandala colouring prompt.",
+"Hold two legal rings and the origin.",
+"Reveal a station wheel.",
+"Draw a quiet field of neighbour edges.",
+"Use only the first six stations.",
+"Show the station crown in mist.",
+"Build a glass overlap still.",
+"Draw a hex-only field.",
+"Show cell-field density at the edge.",
+"Make a low-colour ring system.",
+"Create a daily circle overlap.",
+"Draw a lawful chord harp.",
+"Show the field as a luminous net.",
+"Make a chalk diameter study.",
+"Show the first circle with no fill.",
+"Add a lawful outer shell.",
+"Fill the viewport with unit circles at lattice centres.",
+"Show a poster crop of the six-station relation.",
+"Draw a radial mandala from ring three.",
+"Make a quiet A4 download preview.",
+"Show equilateral cells as stained glass.",
+"Draw a blue cathedral lattice.",
+"Make a red signal still.",
+"Show a coastal horizon lattice.",
+"Use aurora wash over a lawful ring map.",
+"Draw the silent hex.",
+"Make station moons around the unit circle.",
+"Reveal a dense but legible field.",
+"Draw a gold broadside from rings.",
+"Hold the centre and fade everything else."
+];
+for(i=1;i<=60;i++) addAsset({
+  id:makeId("DAY",i),title:"Daily Geometry "+String(i).padStart(2,"0"),intendedRoute:"daily/",
+  family:"Daily Geometry Assets",mode:["daily-simple","quiet-field","rings","mandala","overlap","hex-only","cell-field","coastal-net","lattice-weather","circle-interference"][(i-1)%10],
+  palette:["blue","chalkDark","gold","aurora","lunar","lichen","ember","glass","signal","mist"][(i-1)%10],
+  stillDescription:dailyPrompts[i-1],
+  runtimeIdea:"Daily preview resolves from field marks into the named still and returns to silence.",
+  printable:i%5===0,exportable:true
+});
+
+var construction=[
+ ["CON-001","Plate Deck Cover","construction/","poster","signal","Cover thumbnail for browsing lawful plate stills."],
+ ["CON-002","Reader Cover","construction/","cathedral-field","glass","Cover thumbnail for the reader / plate engine."],
+ ["CON-003","Visual Plate Catalogue Cover","construction/","mandala","aurora","Cover thumbnail for the expanded visual plate catalogue."],
+ ["CON-004","Field Canvas Cover","construction/","cell-field","lichen","Cover thumbnail for drawing on the field."],
+ ["CON-005","Daily Geometry Cover","construction/","daily-simple","gold","Cover thumbnail for daily geometry."],
+ ["CON-006","Project Status Cover","construction/","quiet-field","chalkDark","Cover thumbnail for project status and management notes."]
+];
+construction.forEach(function(c){addAsset({id:c[0],title:c[1],intendedRoute:c[2],family:"Construction Mode Assets",mode:c[3],palette:c[4],stillDescription:c[5],runtimeIdea:"Construction card may pulse gently while retaining the same lawful substrate.",printable:false,exportable:true});});
+
+var sheets=[
+ ["SVG-001","A4 Triangle Grid","triangle-grid"],["SVG-002","A4 Hex Grid","hex-grid"],["SVG-003","First Circle Sheet","daily-simple"],
+ ["SVG-004","Six-Station Sheet","quiet-field"],["SVG-005","Mandala Colouring Sheet","colouring-mandala"],["SVG-006","Overlap-Circle Sheet","colouring-overlap"],
+ ["SVG-007","Field Drawing Sheet","dense-field"],["SVG-008","Poster Field Sheet","poster"]
+];
+sheets.forEach(function(c){addAsset({id:c[0],title:c[1],intendedRoute:"gallery/downloads/",family:"Downloadable SVG Sheets",mode:c[2],palette:"print",stillDescription:"Actual SVG sheet concept suitable for export and download.",runtimeIdea:"Static export sheet; web preview may highlight lawful construction layers.",printable:true,exportable:true});});
+
+modeNames.forEach(function(m,i){addAsset({
+  id:makeId("MODE",i+1),title:"Renderer Mode: "+m,intendedRoute:"assets/js/substrate-viewport.js",family:"Renderer View Modes",mode:m,palette:["glass","aurora","chalkDark","blue","gold","lichen","lunar","signal"][i%8],
+  stillDescription:"Reusable lawful renderer mode for future substrate-viewport integration.",
+  runtimeIdea:"Can be used as a sequence state by plate records and exhibition readers.",
+  printable:false,exportable:false
+});});
+
+function renderAsset(asset,svg,w,h,thumb){
+  var pal=paletteMap[asset.palette]||paletteMap.glass;
+  var print=asset.printable && (asset.palette==="print" || thumb);
+  prepare(svg,w,h,pal,asset.palette==="print");
+  var unit=Math.min(w,h)*(asset.family==="Exhibition Assets"?.095:asset.family==="Downloadable SVG Sheets"?.07:asset.mode.indexOf("quiet")>=0?.14:.105);
+  if(asset.mode==="triangle-grid"||asset.mode==="hex-grid")unit=Math.min(w,h)*(asset.family==="Downloadable SVG Sheets"?.055:.08);
+  var rot=asset.mode==="cathedral-field"?Math.PI/6:asset.mode==="coastal-net"?Math.PI/12:0;
+  var S=substrate(w,h,unit,rot,w/2,asset.mode==="coastal-net"?h*.58:h/2);
+  asset.draw(svg,S,w,h,pal);
+  if(!thumb && asset.family==="Downloadable SVG Sheets"){
+    txt(28,h-28,asset.title,{fill:pal.a,"font-size":18,"font-family":"monospace","letter-spacing":1.2},svg);
+  }
+}
+
+function makeCard(asset,i){
+  var card=document.createElement("article");card.className="card";card.dataset.index=i;
+  var thumb=document.createElement("div");thumb.className="thumb";
+  var s=document.createElementNS(NS,"svg");s.setAttribute("viewBox","0 0 320 210");thumb.appendChild(s);
+  var body=document.createElement("div");body.className="card-body";
+  body.innerHTML="<h4>"+asset.title+"</h4><p>"+asset.stillDescription+"</p><div class='mini-tags'><span>"+asset.id+"</span><span>"+asset.mode+"</span><span>"+asset.palette+"</span></div>";
+  card.appendChild(thumb);card.appendChild(body);
+  card.onclick=function(){selectAsset(i);};
+  if(i<thumbLimit)renderAsset(asset,s,320,210,true);
+  else{prepare(s,320,210,paletteMap[asset.palette]||paletteMap.glass,false);txt(18,110,asset.id,{fill:"#f2fbff","font-size":24,"font-family":"monospace"},s);}
+  return card;
+}
+
+function build(){
+  var counts={};assets.forEach(function(a){counts[a.family]=(counts[a.family]||0)+1;});
+  document.getElementById("counts").innerHTML=sectionOrder.map(function(s){return "<span class='tag'>"+s.replace(" Assets","")+": "+(counts[s]||0)+"</span>";}).join("");
+  var secSel=document.getElementById("sectionSelect");sectionOrder.forEach(function(s){var o=document.createElement("option");o.value=s;o.textContent=s+" · "+(counts[s]||0);secSel.appendChild(o);});
+  secSel.onchange=function(){document.getElementById(slug(secSel.value)).scrollIntoView({behavior:"smooth",block:"start"});};
+  var modeSel=document.getElementById("modeSelect");modeNames.forEach(function(m){var o=document.createElement("option");o.value=m;o.textContent=m;modeSel.appendChild(o);});
+  modeSel.onchange=function(){var i=assets.findIndex(function(a){return a.mode===modeSel.value;});if(i>=0)selectAsset(i);};
+  sectionOrder.forEach(function(section){
+    var list=assets.map(function(a,i){return{a:a,i:i};}).filter(function(x){return x.a.family===section;});
+    var wrap=document.createElement("section");wrap.className="section";wrap.id=slug(section);
+    wrap.innerHTML="<div class='section-head'><div><p class='kicker'>"+routeBySection[section]+"</p><h3>"+section+"</h3></div><p>"+sectionSummary(section)+"</p></div>";
+    var grid=document.createElement("div");grid.className="grid";
+    list.forEach(function(x){grid.appendChild(makeCard(x.a,x.i));});
+    wrap.appendChild(grid);
+    if(section==="Downloadable SVG Sheets"){
+      var actions=document.createElement("div");actions.className="sheet-actions";
+      list.forEach(function(x){var b=document.createElement("button");b.className="download-button";b.textContent="Download "+x.a.title;b.onclick=function(ev){ev.stopPropagation();downloadAsset(x.i);};actions.appendChild(b);});
+      wrap.appendChild(actions);
+    }
+    sectionsEl.appendChild(wrap);
+  });
+}
+function sectionSummary(s){
+  return {
+    "Tessellation Assets":"Lawful grids and poster grounds for workshops, field-canvas routes, classroom sheets, and printable backgrounds.",
+    "Colouring Assets":"Black-line and low-colour lawful sheets for mandalas, first-circle studies, overlaps, cells, rings, and station work.",
+    "Gallery Assets":"Polished stills for mandalas, plate stills, tessellation posters, field drawings, download previews, and community examples.",
+    "Exhibition Assets":"Full-viewport immersive visuals for browser-native exhibition routes.",
+    "Daily Geometry Assets":"Sixty daily still concepts with concise visual prompts.",
+    "Construction Mode Assets":"Current working-object covers and thumbnails for construction mode.",
+    "Downloadable SVG Sheets":"Actual sheet concepts exported directly from this file as SVG.",
+    "Renderer View Modes":"Reusable lawful view modes ready to fold into substrate-viewport.js."
+  }[s]||"";
+}
+function slug(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"");}
+function selectAsset(i){
+  selected=(i+assets.length)%assets.length;
+  var a=assets[selected];
+  renderAsset(a,preview,980,620,false);
+  document.getElementById("assetTitle").textContent=a.title;
+  document.getElementById("assetDesc").textContent=a.stillDescription;
+  document.getElementById("assetTags").innerHTML=["id: "+a.id,a.family,a.intendedRoute,"mode: "+a.mode,"palette: "+a.palette,a.printable?"printable":"screen",a.exportable?"exportable":"renderer-only"].map(function(t){return"<span class='tag'>"+t+"</span>";}).join("");
+  document.querySelectorAll(".card").forEach(function(c){c.classList.toggle("active",Number(c.dataset.index)===selected);});
+  document.getElementById("modeSelect").value=a.mode;
+  document.getElementById("sectionSelect").value=a.family;
+}
+function downloadAsset(i){
+  var a=assets[i], s=document.createElementNS(NS,"svg");
+  var w=794,h=1123; /* A4 at 96dpi approximation */
+  s.setAttribute("xmlns",NS);s.setAttribute("width",w);s.setAttribute("height",h);s.setAttribute("viewBox","0 0 "+w+" "+h);
+  renderAsset(a,s,w,h,false);
+  var data="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(new XMLSerializer().serializeToString(s));
+  var link=document.createElement("a");link.href=data;link.download=a.id.toLowerCase()+"-"+a.title.toLowerCase().replace(/[^a-z0-9]+/g,"-")+".svg";document.body.appendChild(link);link.click();link.remove();
+}
+document.getElementById("prev").onclick=function(){selectAsset(selected-1);};
+document.getElementById("next").onclick=function(){selectAsset(selected+1);};
+document.getElementById("runtime").onclick=function(){runtime=!runtime;this.textContent=runtime?"Runtime":"Still";};
+document.getElementById("exportSvg").onclick=function(){downloadAsset(selected);};
+addEventListener("keydown",function(ev){if(ev.key==="ArrowRight")selectAsset(selected+1);if(ev.key==="ArrowLeft")selectAsset(selected-1);});
+function tick(){clock+=1;if(runtime){var a=assets[selected];if(["lattice-weather","aurora","circle-interference"].indexOf(a.mode)>=0)renderAsset(a,preview,980,620,false);}requestAnimationFrame(tick);}
+build();selectAsset(0);tick();
+
+window.GalwaySitePopulationReservoir={assets:assets,modes:Modes,renderAsset:renderAsset,downloadAsset:downloadAsset};
+})();
+</script>
+</body>
+</html>
