@@ -1,0 +1,834 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Galway Geometry — Plate Catalogue</title>
+<style>
+  :root{
+    --bg:#03040a;
+    --ink:#eaf7ff;
+    --muted:rgba(234,247,255,.58);
+    --faint:rgba(234,247,255,.18);
+    --panel:rgba(2,4,12,.56);
+    --panel2:rgba(255,255,255,.075);
+    --edge:rgba(255,255,255,.16);
+    --accent:#7df9ff;
+    --accent2:#ff59d6;
+    --gold:#ffd36b;
+    --ok:#98ffbf;
+    --danger:#ff7c94;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
+  body{position:fixed;inset:0}
+  #app{position:fixed;inset:0;isolation:isolate;background:#03040a}
+  #stage{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:crosshair;background:#03040a}
+  .hud{position:fixed;z-index:20;inset:16px 18px auto 18px;display:flex;justify-content:space-between;gap:14px;pointer-events:none}
+  .titleBlock{pointer-events:auto;max-width:min(780px,62vw);padding:13px 15px;border:1px solid var(--edge);background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.025));backdrop-filter:blur(18px);box-shadow:0 20px 70px rgba(0,0,0,.34)}
+  .titleBlock h1{margin:0 0 7px;text-transform:uppercase;letter-spacing:.09em;font-size:clamp(16px,2.15vw,29px);font-weight:760}
+  .titleBlock p{margin:0;color:var(--muted);font-size:11px;line-height:1.55;max-width:76ch}
+  .controls{pointer-events:auto;display:flex;flex-wrap:wrap;justify-content:flex-end;align-content:flex-start;gap:7px;max-width:540px}
+  button,select{
+    color:var(--ink);background:var(--panel);border:1px solid var(--edge);
+    padding:9px 10px;font:inherit;font-size:11px;letter-spacing:.045em;text-transform:uppercase;
+    backdrop-filter:blur(18px);outline:none
+  }
+  button:hover,select:hover{border-color:rgba(125,249,255,.68);box-shadow:0 0 24px rgba(125,249,255,.12)}
+  button:active{transform:translateY(1px)}
+  select{max-width:210px}
+  .meta{
+    position:fixed;z-index:18;left:18px;bottom:18px;width:min(500px,calc(100vw - 36px));
+    padding:13px 15px;border:1px solid var(--edge);background:linear-gradient(180deg,rgba(2,4,12,.62),rgba(2,4,12,.34));
+    backdrop-filter:blur(18px);box-shadow:0 20px 70px rgba(0,0,0,.36);pointer-events:none
+  }
+  .meta .kicker{text-transform:uppercase;letter-spacing:.18em;color:var(--muted);font-size:10px;margin-bottom:7px}
+  .meta h2{margin:0 0 7px;font-size:clamp(18px,2.4vw,34px);line-height:1.04;letter-spacing:.035em}
+  .meta .line{display:flex;gap:10px;flex-wrap:wrap;color:rgba(234,247,255,.66);font-size:11px;line-height:1.5}
+  .tag{border:1px solid rgba(234,247,255,.15);padding:3px 7px;background:rgba(255,255,255,.04)}
+  .deck{
+    position:fixed;z-index:19;right:18px;bottom:18px;width:min(520px,calc(100vw - 36px));max-height:35vh;
+    display:grid;grid-template-columns:repeat(8,minmax(32px,1fr));gap:6px;pointer-events:auto
+  }
+  .card{
+    min-height:39px;border:1px solid rgba(255,255,255,.13);background:rgba(2,4,12,.48);
+    color:rgba(234,247,255,.64);display:flex;align-items:center;justify-content:center;
+    font-size:10px;letter-spacing:.05em;backdrop-filter:blur(12px);position:relative;overflow:hidden
+  }
+  .card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,var(--c,rgba(125,249,255,.28)),transparent 64%);opacity:.42}
+  .card span{position:relative;z-index:2}
+  .card.active{border-color:rgba(125,249,255,.9);color:#fff;box-shadow:0 0 34px rgba(125,249,255,.16)}
+  .card:hover{border-color:rgba(255,255,255,.4)}
+  .lawmark{
+    position:fixed;z-index:17;left:50%;bottom:18px;transform:translateX(-50%);pointer-events:none;
+    color:rgba(234,247,255,.38);font-size:10px;letter-spacing:.18em;text-transform:uppercase;white-space:nowrap
+  }
+  .hideMeta .meta,.hideMeta .titleBlock,.hideMeta .controls,.hideMeta .deck,.hideMeta .lawmark{opacity:0;pointer-events:none}
+  .grain{
+    position:fixed;inset:-20%;z-index:5;pointer-events:none;opacity:.08;mix-blend-mode:screen;
+    background-image:
+      linear-gradient(0deg,transparent 0 48%,rgba(255,255,255,.26) 50%,transparent 52%),
+      linear-gradient(90deg,transparent 0 48%,rgba(255,255,255,.2) 50%,transparent 52%);
+    background-size:7px 7px;
+    transform:rotate(.35deg)
+  }
+  @media (max-width:760px){
+    .hud{inset:10px 10px auto 10px;display:block}
+    .titleBlock{max-width:calc(100vw - 20px);margin-bottom:8px}
+    .titleBlock p{display:none}
+    .controls{justify-content:flex-start;max-width:calc(100vw - 20px)}
+    button,select{font-size:10px;padding:8px}
+    .meta{left:10px;bottom:10px;width:calc(100vw - 20px)}
+    .deck{left:10px;right:10px;bottom:112px;width:auto;grid-template-columns:repeat(8,1fr);max-height:22vh}
+    .lawmark{display:none}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <svg id="stage" role="img" aria-label="Galway Geometry lawful plate viewport"></svg>
+  <div class="grain"></div>
+  <div class="hud">
+    <section class="titleBlock">
+      <h1>Galway Geometry</h1>
+      <p>The substrate supplies the law. The plate supplies the event. The reader supplies the theatre. Every visible circle, chord, station, triangle, hexagon, field cell, and radial event is projected from the lawful triangular lattice.</p>
+    </section>
+    <nav class="controls" aria-label="Plate controls">
+      <button id="prev">Previous</button>
+      <button id="next">Next</button>
+      <button id="play">Pause</button>
+      <button id="mode">Runtime</button>
+      <select id="family" aria-label="Jump by family"></select>
+      <button id="audio">Audio Off</button>
+      <button id="ui">Hide UI</button>
+    </nav>
+  </div>
+  <aside class="meta" aria-live="polite">
+    <div class="kicker" id="familyName"></div>
+    <h2 id="plateTitle"></h2>
+    <div class="line">
+      <span class="tag" id="plateId"></span>
+      <span class="tag" id="paletteName"></span>
+      <span class="tag" id="viewportName"></span>
+      <span class="tag" id="effectName"></span>
+    </div>
+  </aside>
+  <section class="deck" id="deck" aria-label="Plate deck"></section>
+  <div class="lawmark">P(q,r) · x = originX + unit(q + r/2) · y = originY − unit(r√3/2)</div>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  const SVG_NS = "http://www.w3.org/2000/svg";
+  const TAU = Math.PI * 2;
+  const SQRT3 = Math.sqrt(3);
+
+  const $ = (id) => document.getElementById(id);
+  const svg = $("stage");
+  const deck = $("deck");
+  const titleEl = $("plateTitle");
+  const famEl = $("familyName");
+  const idEl = $("plateId");
+  const palEl = $("paletteName");
+  const viewEl = $("viewportName");
+  const effEl = $("effectName");
+  const familySelect = $("family");
+
+  let W = 1, H = 1, CX = 0, CY = 0;
+  let index = 0;
+  let playing = true;
+  let still = false;
+  let reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let pointer = {x:.5,y:.5,active:false};
+  let audioCtx = null, audioOn = false, drone = null, gain = null;
+
+  const palettes = {
+    tide:   {name:"Tide Glass", bg:["#020713","#071a2e","#00020a"], a:"#7df9ff", b:"#5fa8ff", c:"#d2ffff", d:"#102f4d", e:"#ffffff"},
+    dusk:   {name:"Dusk Rose", bg:["#080410","#1b0925","#030006"], a:"#ff59d6", b:"#8057ff", c:"#ffd6f5", d:"#381543", e:"#ffe3fb"},
+    ember:  {name:"Ember Field", bg:["#090504","#241006","#030101"], a:"#ffd36b", b:"#ff7c4b", c:"#fff0c1", d:"#3b1d0b", e:"#ffffff"},
+    lichen: {name:"Lichen Lamp", bg:["#020806","#06251a","#010302"], a:"#98ffbf", b:"#29d6a5", c:"#e2fff0", d:"#123f2c", e:"#ffffff"},
+    chalk:  {name:"Chalk Night", bg:["#05060a","#10131c","#020207"], a:"#eaf7ff", b:"#9fb4c8", c:"#ffffff", d:"#1b202a", e:"#ffffff"},
+    aurora: {name:"Aurora Signal", bg:["#02030d","#071c26","#09051a"], a:"#72ffdb", b:"#bf63ff", c:"#eefcff", d:"#172042", e:"#ffffff"},
+    signal: {name:"Signal Red", bg:["#070409","#160508","#030102"], a:"#ff496c", b:"#ffd36b", c:"#ffe9ef", d:"#301019", e:"#ffffff"}
+  };
+
+  const families = [
+    "First Circle",
+    "Six Stations",
+    "Equilateral Cells",
+    "Diameter Studies",
+    "Triangle Catalogue",
+    "Hexagon Relations",
+    "Circle Overlap",
+    "Field Expansion",
+    "Mandala / Radial Studies",
+    "Poster / Atmospheric Plates"
+  ];
+
+  const plates = [
+    {id:"FC-01",title:"First Circle: Ignition",family:"First Circle",palette:"tide",still:"resolved first circle, centre, faint field",sequence:["field breath","centre ignition","circle arrival","station glimmer"],timing:"14s loop",effects:"glow, blur, dash reveal",viewport:"central theatre",draw:firstCircle},
+    {id:"FC-02",title:"First Circle: Deep Well",family:"First Circle",palette:"chalk",still:"quiet concentric lawful radii",sequence:["lattice appears","unit circle holds","derived radii echo"],timing:"18s loop",effects:"chalk grain, soft shadow",viewport:"large silence",draw:firstWell},
+    {id:"FC-03",title:"First Circle: Aurora Lens",family:"First Circle",palette:"aurora",still:"circle as luminous lens",sequence:["wash rises","circle masks field","stations flicker"],timing:"20s loop",effects:"radial gradients, blend",viewport:"edge-to-edge atmosphere",draw:auroraLens},
+
+    {id:"SS-01",title:"Six Stations: Boundary Choir",family:"Six Stations",palette:"dusk",still:"six station circles around first circle",sequence:["six centres sing","chords answer","hex ring blooms"],timing:"16s loop",effects:"station pulses, chord shimmer",viewport:"sixfold stage",draw:sixChoir},
+    {id:"SS-02",title:"Six Stations: Compass Gate",family:"Six Stations",palette:"ember",still:"six boundary stations as gates",sequence:["diameters open","opposed stations glow","circle returns"],timing:"15s loop",effects:"gate flares, luminous strokes",viewport:"wide radial",draw:compassGate},
+    {id:"SS-03",title:"Six Stations: Tidal Stations",family:"Six Stations",palette:"tide",still:"stations distributed through lawful copies",sequence:["station set translates","waves cross legal centres","field holds"],timing:"22s loop",effects:"opacity waves",viewport:"full-field repetition",draw:tidalStations},
+
+    {id:"EC-01",title:"Equilateral Cells: First Mesh",family:"Equilateral Cells",palette:"lichen",still:"triangular cells around origin",sequence:["cells fill","alternating cells breathe","edge cells dissolve"],timing:"19s loop",effects:"cell fills, soft glow",viewport:"full lattice crop",draw:firstMesh},
+    {id:"EC-02",title:"Equilateral Cells: Glass Tessellation",family:"Equilateral Cells",palette:"aurora",still:"lawful triangular tessellation",sequence:["triangles rotate in opacity only","legal edges remain","glass passes"],timing:"21s loop",effects:"transparent fills, blur",viewport:"wall-to-wall cells",draw:glassTessellation},
+    {id:"EC-03",title:"Equilateral Cells: Chorded Tiles",family:"Equilateral Cells",palette:"signal",still:"equilateral cell chords",sequence:["legal cells ignite","cell diagonals draw","field contracts"],timing:"17s loop",effects:"dash timing, poster contrast",viewport:"poster field",draw:chordedTiles},
+
+    {id:"DS-01",title:"Diameter Study: Three Axes",family:"Diameter Studies",palette:"chalk",still:"three lawful diameters",sequence:["axis one","axis two","axis three","all hold"],timing:"13s loop",effects:"line glow, axial pulses",viewport:"large axis chamber",draw:threeAxes},
+    {id:"DS-02",title:"Diameter Study: Split Halo",family:"Diameter Studies",palette:"dusk",still:"opposed station diameters split a halo",sequence:["opposites connect","halos pass legal centres","return"],timing:"16s loop",effects:"wide strokes, soft blur",viewport:"immersive halo",draw:splitHalo},
+    {id:"DS-03",title:"Diameter Study: Scanner",family:"Diameter Studies",palette:"tide",still:"diameter scanner on lattice directions",sequence:["lawful scan passes","stations answer","field records"],timing:"12s loop",effects:"animated mask, scan bloom",viewport:"edge-to-edge scan",draw:scanner},
+
+    {id:"TC-01",title:"Triangle Catalogue: Seed Six",family:"Triangle Catalogue",palette:"ember",still:"six equilateral triangles around origin",sequence:["triangles emerge","orientation alternates","centre burns"],timing:"18s loop",effects:"warm fills, stroke reveal",viewport:"radial catalogue",draw:seedSix},
+    {id:"TC-02",title:"Triangle Catalogue: Large Lawfuls",family:"Triangle Catalogue",palette:"lichen",still:"larger triangles from scaled lattice",sequence:["scale one","scale two","scale three","all echo"],timing:"24s loop",effects:"nested transparency",viewport:"full height",draw:largeTriangles},
+    {id:"TC-03",title:"Triangle Catalogue: Meteor Cells",family:"Triangle Catalogue",palette:"signal",still:"triangular cells as meteoric lawful fragments",sequence:["cells flare by legal distance","strokes sweep","hold"],timing:"14s loop",effects:"trail blur, luminosity",viewport:"diagonal field",draw:meteorCells},
+
+    {id:"HR-01",title:"Hexagon Relations: First Hex",family:"Hexagon Relations",palette:"tide",still:"regular hexagon through six stations",sequence:["stations resolve","hex edges draw","inner triangles breathe"],timing:"17s loop",effects:"edge neon, inner mist",viewport:"central hex theatre",draw:firstHex},
+    {id:"HR-02",title:"Hexagon Relations: Honey Field",family:"Hexagon Relations",palette:"gold" in palettes ? "gold" : "ember",still:"hexagons tiled on lawful centres",sequence:["hex cells enter","rings expand","field glows"],timing:"22s loop",effects:"cell halos, depth",viewport:"full honeycomb",draw:honeyField},
+    {id:"HR-03",title:"Hexagon Relations: Broken Crown",family:"Hexagon Relations",palette:"dusk",still:"partial lawful hex rings",sequence:["crown fragments appear","legal gaps remain","crown turns visually"],timing:"20s loop",effects:"mask, wide glow",viewport:"asymmetric crop",draw:brokenCrown},
+
+    {id:"CO-01",title:"Circle Overlap: Vesica Six",family:"Circle Overlap",palette:"aurora",still:"unit circles centred on six stations",sequence:["station circles open","overlaps thicken","centre clears"],timing:"23s loop",effects:"screen blending, gradients",viewport:"overlap chamber",draw:vesicaSix},
+    {id:"CO-02",title:"Circle Overlap: Ring Interference",family:"Circle Overlap",palette:"tide",still:"field of legal unit circles",sequence:["circles radiate by lattice ring","overlaps shimmer","field calms"],timing:"26s loop",effects:"thin strokes, glow blur",viewport:"edge-to-edge interference",draw:ringInterference},
+    {id:"CO-03",title:"Circle Overlap: Lunar Chords",family:"Circle Overlap",palette:"chalk",still:"chords between lawful circle intersections approximated by stations",sequence:["station chords reveal","circles veil","lunar hold"],timing:"16s loop",effects:"soft mask, chalk arcs",viewport:"quiet lunar",draw:lunarChords},
+
+    {id:"FE-01",title:"Field Expansion: Lattice Rain",family:"Field Expansion",palette:"lichen",still:"expanded axial lattice",sequence:["points seed","rings expand","cells become weather"],timing:"24s loop",effects:"point glow, rain timing",viewport:"entire field",draw:latticeRain},
+    {id:"FE-02",title:"Field Expansion: Ring Map",family:"Field Expansion",palette:"ember",still:"lattice rings around origin",sequence:["ring zero","ring one","ring two","ring three","ring four"],timing:"20s loop",effects:"ring pulses, warm haze",viewport:"full radial map",draw:ringMap},
+    {id:"FE-03",title:"Field Expansion: Coast Net",family:"Field Expansion",palette:"tide",still:"lawful net cropped like coast-light",sequence:["edges travel","nodes answer","net breathes"],timing:"21s loop",effects:"blue glow, thin geometry",viewport:"wide low horizon",draw:coastNet},
+
+    {id:"MR-01",title:"Mandala Study: Twelve Legal Echoes",family:"Mandala / Radial Studies",palette:"dusk",still:"sixfold circles and hexagon echoes",sequence:["sixfold ring","diameter chords","secondary ring","return"],timing:"28s loop",effects:"mandala glow, opacity rhythm",viewport:"full radial",draw:twelveEchoes},
+    {id:"MR-02",title:"Mandala Study: Station Wheel",family:"Mandala / Radial Studies",palette:"aurora",still:"wheel of lawful station copies",sequence:["wheel brightens","legal spokes draw","field rotates as presentation"],timing:"24s loop",effects:"presentation rotation, glow",viewport:"full circle crop",draw:stationWheel},
+    {id:"MR-03",title:"Mandala Study: Breathing Crown",family:"Mandala / Radial Studies",palette:"signal",still:"radial crown from legal triangles",sequence:["crown cells light","inner chords flash","outer cells fade"],timing:"18s loop",effects:"poster glow, hard contrast",viewport:"overscaled radial",draw:breathingCrown},
+
+    {id:"PA-01",title:"Poster Plate: Galway Night Signal",family:"Poster / Atmospheric Plates",palette:"signal",still:"large lawful poster geometry",sequence:["background field","first circle burns","legal bars appear","poster lock"],timing:"18s loop",effects:"poster grain, glow bars",viewport:"full poster",draw:nightSignal},
+    {id:"PA-02",title:"Poster Plate: Glass Monastery",family:"Poster / Atmospheric Plates",palette:"chalk",still:"monumental lawful glass",sequence:["vertical field descends","hex nave appears","circle lamps glow"],timing:"25s loop",effects:"glass blur, deep shadows",viewport:"architectural full field",draw:glassMonastery},
+    {id:"PA-03",title:"Poster Plate: Aurora Field",family:"Poster / Atmospheric Plates",palette:"aurora",still:"legal circles buried in aurora wash",sequence:["wash moves","lattice emerges","stations flare","wash recedes"],timing:"30s loop",effects:"aurora gradients, masks",viewport:"cinematic field",draw:auroraField}
+  ];
+
+  function create(tag, attrs={}, parent=svg){
+    const el = document.createElementNS(SVG_NS, tag);
+    for (const [k,v] of Object.entries(attrs)) {
+      if (v !== undefined && v !== null) el.setAttribute(k, String(v));
+    }
+    parent.appendChild(el);
+    return el;
+  }
+
+  function clear(){ svg.replaceChildren(); }
+
+  function radial(id, stops){
+    const g = create("radialGradient", {id, cx:"50%", cy:"50%", r:"60%"}, defs);
+    stops.forEach(s => create("stop", {offset:s[0], "stop-color":s[1], "stop-opacity":s[2]}, g));
+    return `url(#${id})`;
+  }
+  function linear(id, stops, attrs={}){
+    const g = create("linearGradient", {id, x1:"0%", y1:"0%", x2:"100%", y2:"100%", ...attrs}, defs);
+    stops.forEach(s => create("stop", {offset:s[0], "stop-color":s[1], "stop-opacity":s[2]}, g));
+    return `url(#${id})`;
+  }
+  function filterGlow(id, color, blur=8, alpha=.9){
+    const f = create("filter", {id, x:"-80%", y:"-80%", width:"260%", height:"260%"}, defs);
+    create("feGaussianBlur", {stdDeviation:blur, result:"blur"}, f);
+    create("feFlood", {"flood-color":color, "flood-opacity":alpha, result:"color"}, f);
+    create("feComposite", {in:"color", in2:"blur", operator:"in", result:"glow"}, f);
+    const m = create("feMerge", {}, f);
+    create("feMergeNode", {in:"glow"}, m);
+    create("feMergeNode", {in:"SourceGraphic"}, m);
+    return `url(#${id})`;
+  }
+
+  let defs;
+
+  function viewStrategy(name){
+    const min = Math.min(W,H), max = Math.max(W,H);
+    if (name.includes("silence")) return min * .18;
+    if (name.includes("poster")) return min * .155;
+    if (name.includes("overscaled")) return min * .22;
+    if (name.includes("edge") || name.includes("entire") || name.includes("full") || name.includes("wall")) return min * .105;
+    if (name.includes("wide")) return min * .12;
+    if (name.includes("large")) return min * .15;
+    return min * .13;
+  }
+
+  function substrate(unit, ox=CX, oy=CY, visualRotation=0){
+    const cos = Math.cos(visualRotation), sin = Math.sin(visualRotation);
+    const base = (q,r) => {
+      const x = unit * (q + r/2);
+      const y = -unit * (r * SQRT3/2);
+      return {x: ox + x*cos - y*sin, y: oy + x*sin + y*cos, q, r};
+    };
+    const dist = (a,b) => Math.hypot(a.x-b.x,a.y-b.y);
+    const dirs = [[1,0],[0,1],[1,-1],[-1,0],[0,-1],[-1,1]];
+    const stationsQR = [[-1,0],[-1,1],[0,1],[1,0],[1,-1],[0,-1]];
+    const stations = stationsQR.map(([q,r]) => base(q,r));
+    return {unit, ox, oy, p:base, dirs, stations, stationsQR, dist};
+  }
+
+  function pointsInRect(S, margin=2){
+    const range = Math.ceil((Math.max(W,H) / S.unit) * 1.35) + margin;
+    const pts = [];
+    for(let q=-range;q<=range;q++){
+      for(let r=-range;r<=range;r++){
+        const p = S.p(q,r);
+        if(p.x>-S.unit*margin && p.x<W+S.unit*margin && p.y>-S.unit*margin && p.y<H+S.unit*margin) pts.push(p);
+      }
+    }
+    return pts;
+  }
+
+  function ringCoords(n){
+    if(n===0) return [[0,0]];
+    const dirs = [[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]];
+    let q=-n, r=0, out=[];
+    for(let side=0; side<6; side++){
+      for(let i=0; i<n; i++){
+        out.push([q,r]);
+        q += dirs[side][0];
+        r += dirs[side][1];
+      }
+    }
+    return out;
+  }
+
+  function axialDistance(q,r){ return Math.max(Math.abs(q), Math.abs(r), Math.abs(q+r)); }
+
+  function line(a,b,attrs={},parent=svg){
+    return create("line", {x1:a.x,y1:a.y,x2:b.x,y2:b.y,...attrs}, parent);
+  }
+  function circle(p, rad, attrs={},parent=svg){
+    return create("circle", {cx:p.x,cy:p.y,r:rad,...attrs}, parent);
+  }
+  function poly(pts, attrs={},parent=svg){
+    return create("polygon", {points:pts.map(p=>`${p.x},${p.y}`).join(" "),...attrs}, parent);
+  }
+  function pathD(pts, close=false){
+    return pts.map((p,i)=>(i?"L":"M")+p.x+" "+p.y).join(" ") + (close?" Z":"");
+  }
+  function path(pts, attrs={}, parent=svg, close=false){
+    return create("path", {d:pathD(pts,close),...attrs}, parent);
+  }
+  function group(attrs={}, parent=svg){ return create("g", attrs, parent); }
+
+  function cssTime(mult=1, offset=0){
+    if(still || !playing || reduced) return "none";
+    const plate = plates[index];
+    const seconds = parseFloat(plate.timing) || 18;
+    return `${seconds*mult}s`;
+  }
+  function animStyle(kind, mult=1, delay=0){
+    if(still || !playing || reduced) return "";
+    return `animation:${kind} ${cssTime(mult)} cubic-bezier(.4,0,.2,1) ${delay}s infinite both`;
+  }
+
+  const styleEl = document.createElement("style");
+  styleEl.textContent = `
+    @keyframes breathe{0%,100%{opacity:.22;transform:scale(.985)}45%{opacity:1;transform:scale(1.018)}}
+    @keyframes pulse{0%,100%{opacity:.25}50%{opacity:1}}
+    @keyframes dash{0%{stroke-dashoffset:1}45%,100%{stroke-dashoffset:0}}
+    @keyframes turn{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    @keyframes drift{0%,100%{opacity:.32}50%{opacity:.9}}
+    @keyframes arrive{0%{opacity:0;transform:scale(.72)}42%,100%{opacity:1;transform:scale(1)}}
+    @keyframes pass{0%{opacity:0;transform:translateX(-8%)}35%{opacity:.9}70%,100%{opacity:0;transform:translateX(8%)}}
+    @keyframes glowline{0%,100%{stroke-width:1;opacity:.22}50%{stroke-width:3.5;opacity:1}}
+    .dash{stroke-dasharray:1;stroke-dashoffset:1;pathLength:1}
+    .svg-origin{transform-box:view-box;transform-origin:center}
+    .shape-origin{transform-box:fill-box;transform-origin:center}
+  `;
+  document.head.appendChild(styleEl);
+
+  function baseScene(paletteKey){
+    clear();
+    defs = create("defs");
+    const pal = palettes[paletteKey];
+    const bg = linear("bg", [[0,pal.bg[0],1],[.5,pal.bg[1],1],[1,pal.bg[2],1]], {x1:"0%",y1:"0%",x2:"100%",y2:"100%"});
+    create("rect", {x:0,y:0,width:W,height:H,fill:bg});
+    radial("mistA", [[0,pal.a,.28],[.38,pal.b,.11],[1,pal.bg[2],0]]);
+    radial("mistB", [[0,pal.b,.24],[.48,pal.a,.08],[1,pal.bg[2],0]]);
+    filterGlow("glowA", pal.a, 8, .95);
+    filterGlow("glowB", pal.b, 14, .72);
+    filterGlow("soft", pal.c, 22, .38);
+    const atm = group({opacity:.9, style:animStyle("drift",1.4)});
+    create("circle", {cx:W*.22, cy:H*.72, r:Math.max(W,H)*.46, fill:"url(#mistA)"}, atm);
+    create("circle", {cx:W*.78, cy:H*.28, r:Math.max(W,H)*.42, fill:"url(#mistB)"}, atm);
+  }
+
+  function drawLattice(S, pal, opts={}){
+    const pts = pointsInRect(S, 3);
+    const g = group({opacity: opts.opacity ?? .25});
+    pts.forEach(p => {
+      const d = axialDistance(p.q,p.r);
+      if (opts.points !== false) circle(p, opts.pointR ?? Math.max(1,S.unit*.022), {fill:pal.c, opacity:Math.max(.08,.42-d*.025), filter:"url(#glowA)"}, g);
+      if (opts.lines !== false) {
+        [[1,0],[0,1],[1,-1]].forEach(([dq,dr]) => {
+          const p2 = S.p(p.q+dq,p.r+dr);
+          if(p2.x>-S.unit*3 && p2.x<W+S.unit*3 && p2.y>-S.unit*3 && p2.y<H+S.unit*3) {
+            line(p,p2,{stroke:pal.c,"stroke-width":opts.lineW ?? .65,opacity:Math.max(.045,.22-d*.015)},g);
+          }
+        });
+      }
+    });
+    return g;
+  }
+
+  function stationLabels(S,pal,g){
+    S.stations.forEach((p,i)=>circle(p,S.unit*.052,{fill:pal.a,opacity:.86,filter:"url(#glowA)",style:animStyle("pulse",1, i*.08)},g));
+  }
+
+  function firstCircle(ctx){
+    const {S,pal,t} = ctx;
+    drawLattice(S,pal,{opacity:.23,lineW:.55,pointR:S.unit*.018});
+    const g = group({filter:"url(#glowA)"});
+    circle(S.p(0,0), S.unit, {fill:"none",stroke:pal.a,"stroke-width":2.2,opacity:.96,class:"dash",style:animStyle("dash",.9)}, g);
+    circle(S.p(0,0), S.unit*.995, {fill:"none",stroke:pal.c,"stroke-width":.75,opacity:.72}, g);
+    circle(S.p(0,0), S.unit*.055, {fill:pal.c,opacity:.95,filter:"url(#glowA)",style:animStyle("breathe",.8)}, g);
+    stationLabels(S,pal,g);
+    S.stations.forEach((p,i)=>line(S.p(0,0),p,{stroke:pal.b,"stroke-width":.85,opacity:.32,style:animStyle("glowline",1.15,i*.06)},g));
+  }
+
+  function firstWell(ctx){
+    const {S,pal} = ctx;
+    drawLattice(S,pal,{opacity:.16,lineW:.5,pointR:S.unit*.015});
+    const g = group({filter:"url(#soft)"});
+    [1,2,3,4,5].forEach((r,i)=>circle(S.p(0,0),S.unit*r,{fill:"none",stroke:i?pal.b:pal.a,"stroke-width":i? .9:2.2,opacity:.52/(i*.2+1),style:animStyle("breathe",1.2+i*.12,i*.12)},g));
+    S.stations.forEach(p=>circle(p,S.unit,{fill:"none",stroke:pal.c,"stroke-width":.8,opacity:.18},g));
+    circle(S.p(0,0),S.unit*.07,{fill:pal.c,opacity:.95,filter:"url(#glowA)"},g);
+  }
+
+  function auroraLens(ctx){
+    const {S,pal} = ctx;
+    drawLattice(S,pal,{opacity:.13,lineW:.45,pointR:S.unit*.012});
+    const g = group({style:animStyle("drift",1.6),filter:"url(#soft)"});
+    circle(S.p(0,0),S.unit*3.9,{fill:"url(#mistA)",opacity:.56},g);
+    circle(S.p(0,0),S.unit,{fill:"none",stroke:pal.c,"stroke-width":2.8,opacity:.9,filter:"url(#glowA)"},g);
+    S.stations.forEach((p,i)=>circle(p,S.unit,{fill:"none",stroke:i%2?pal.a:pal.b,"stroke-width":1.15,opacity:.32,style:animStyle("pulse",1,i*.1)},g));
+    path(S.stations,{fill:"none",stroke:pal.c,"stroke-width":.8,opacity:.38},g,true);
+  }
+
+  function sixChoir(ctx){
+    const {S,pal}=ctx; drawLattice(S,pal,{opacity:.16,lineW:.5});
+    const g=group({filter:"url(#glowA)"});
+    S.stations.forEach((p,i)=>{
+      circle(p,S.unit*.42,{fill:"none",stroke:i%2?pal.a:pal.b,"stroke-width":1.5,opacity:.8,style:animStyle("breathe",1,i*.13)},g);
+      circle(p,S.unit*.075,{fill:pal.c,opacity:.95},g);
+    });
+    for(let i=0;i<6;i++) line(S.stations[i],S.stations[(i+1)%6],{stroke:pal.c,"stroke-width":1.2,opacity:.65,class:"dash",style:animStyle("dash",1,i*.09)},g);
+    circle(S.p(0,0),S.unit,{fill:"none",stroke:pal.a,"stroke-width":1.1,opacity:.7},g);
+  }
+
+  function compassGate(ctx){
+    const {S,pal}=ctx; drawLattice(S,pal,{opacity:.14,lineW:.6,points:false});
+    const g=group({filter:"url(#glowB)"});
+    [[0,3],[1,4],[2,5]].forEach((pair,i)=>{
+      line(S.stations[pair[0]],S.stations[pair[1]],{stroke:i?pal.b:pal.a,"stroke-width":5-i,opacity:.48,style:animStyle("glowline",1,i*.18)},g);
+      line(S.stations[pair[0]],S.stations[pair[1]],{stroke:pal.c,"stroke-width":.9,opacity:.8},g);
+    });
+    S.stations.forEach((p,i)=>circle(p,S.unit*.24,{fill:"none",stroke:pal.a,"stroke-width":1.4,opacity:.75,style:animStyle("breathe",1.1,i*.1)},g));
+    circle(S.p(0,0),S.unit,{fill:"none",stroke:pal.c,"stroke-width":1,opacity:.55},g);
+  }
+
+  function tidalStations(ctx){
+    const {S,pal}=ctx; const pts=pointsInRect(S,2);
+    const g=group({filter:"url(#glowA)"});
+    pts.forEach(p=>{
+      if((Math.abs(p.q+p.r)%3)===0) circle(p,S.unit*.045,{fill:pal.a,opacity:.48,style:animStyle("pulse",1+(axialDistance(p.q,p.r)%4)*.05, axialDistance(p.q,p.r)*.035)},g);
+    });
+    pts.forEach(p=>{ if(axialDistance(p.q,p.r)%3===1) circle(p,S.unit,{fill:"none",stroke:pal.b,"stroke-width":.55,opacity:.11},g); });
+    drawLattice(S,pal,{opacity:.12,lineW:.45,pointR:S.unit*.01});
+  }
+
+  function triCell(S,q,r,up=true){
+    const a=S.p(q,r), b=S.p(q+1,r), c=S.p(q,r+1), d=S.p(q+1,r-1);
+    return up ? [a,b,c] : [a,b,d];
+  }
+
+  function firstMesh(ctx){
+    const {S,pal}=ctx; drawLattice(S,pal,{opacity:.12,lineW:.45,pointR:S.unit*.012});
+    const g=group({filter:"url(#glowA)"});
+    for(let q=-6;q<=6;q++) for(let r=-6;r<=6;r++){
+      const d=axialDistance(q,r); if(d>6) continue;
+      const pts=triCell(S,q,r,(q+r)%2===0);
+      poly(pts,{fill:(q+r)%2?pal.a:pal.b,opacity:Math.max(.05,.32-d*.03),stroke:pal.c,"stroke-width":.45,style:animStyle("pulse",1.2,(d%6)*.08)},g);
+    }
+    circle(S.p(0,0),S.unit,{fill:"none",stroke:pal.c,"stroke-width":1.2,opacity:.65},g);
+  }
+
+  function glassTessellation(ctx){
+    const {S,pal}=ctx; const g=group({filter:"url(#soft)"});
+    for(let q=-11;q<=11;q++) for(let r=-11;r<=11;r++){
+      const p=S.p(q,r); if(p.x<-S.unit||p.x>W+S.unit||p.y<-S.unit||p.y>H+S.unit) continue;
+      const d=axialDistance(q,r);
+      [true,false].forEach((up,k)=>poly(triCell(S,q,r,up),{fill:k?pal.a:pal.b,opacity:.09+(d%5)*.012,stroke:pal.c,"stroke-width":.35,style:animStyle("pulse",1.6,((q-r+d)%9)*.07)},g));
+    }
+    drawLattice(S,pal,{opacity:.1,lineW:.35,points:false});
+  }
+
+  function chordedTiles(ctx){
+    const {S,pal}=ctx; const g=group({filter:"url(#glowA)"});
+    for(let q=-8;q<=8;q++) for(let r=-8;r<=8;r++){
+      const d=axialDistance(q,r); if(d>8 || d%2) continue;
+      const pts=triCell(S,q,r,true);
+      poly(pts,{fill:pal.a,opacity:.1,stroke:pal.c,"stroke-width":.8},g);
+      line(pts[0],pts[1],{stroke:pal.b,"stroke-width":1.2,opacity:.6,style:animStyle("dash",1,d*.04),class:"dash"},g);
+      line(pts[1],pts[2],{stroke:pal.a,"stroke-width":1.2,opacity:.5,style:animStyle("dash",1,d*.05),class:"dash"},g);
+      line(pts[2],pts[0],{stroke:pal.c,"stroke-width":.8,opacity:.46},g);
+    }
+  }
+
+  function threeAxes(ctx){
+    const {S,pal}=ctx; drawLattice(S,pal,{opacity:.13,lineW:.5,pointR:S.unit*.012});
+    const g=group({filter:"url(#glowA)"});
+    [[-8,0,8,0],[0,-8,0,8],[-8,8,8,-8]].forEach((v,i)=>{
+      line(S.p(v[0],v[1]),S.p(v[2],v[3]),{stroke:i?pal.b:pal.a,"stroke-width":2.4-i*.35,opacity:.72,style:animStyle("glowline",1.2,i*.22)},g);
+    });
+    circle(S.p(0,0),S.unit,{fill:"none",stroke:pal.c,"stroke-width":1.1,opacity:.7},g);
+    stationLabels(S,pal,g);
+  }
+
+  function splitHalo(ctx){
+    const {S,pal}=ctx; const g=group({filter:"url(#glowB)"});
+    [1,2,3.5,5].forEach((r,i)=>circle(S.p(0,0),S.unit*r,{fill:"none",stroke:i%2?pal.b:pal.a,"stroke-width":4/(i+1),opacity:.34,style:animStyle("breathe",1.4,i*.15)},g));
+    [[0,3],[1,4],[2,5]].forEach((v,i)=>line(S.stations[v[0]],S.stations[v[1]],{stroke:pal.c,"stroke-width":1.4,opacity:.8,class:"dash",style:animStyle("dash",1,i*.18)},g));
+    drawLattice(S,pal,{opacity:.08,lineW:.4,points:false});
+  }
+
+  function scanner(ctx){
+    const {S,pal,t}=ctx; drawLattice(S,pal,{opacity:.14,lineW:.45,pointR:S.unit*.011});
+    const g=group({filter:"url(#glowA)"});
+    const phase=still?0:(t*.00018%1);
+    [[-10,0,10,0],[0,-10,0,10],[-10,10,10,-10]].forEach((v,i)=>line(S.p(v[0],v[1]),S.p(v[2],v[3]),{stroke:pal.b,"stroke-width":.8,opacity:.28},g));
+    for(let n=-9;n<=9;n++){
+      const p1=S.p(n,-10), p2=S.p(n,10);
+      const near = Math.abs(((n+10)/20)-phase);
+      line(p1,p2,{stroke:pal.a,"stroke-width":near<.08?3: .55,opacity:near<.08?.78:.08},g);
+    }
+    circle(S.p(0,0),S.unit,{fill:"none",stroke:pal.c,"stroke-width":1.2,opacity:.8},g);
+  }
+
+  function seedSix(ctx){
+    const {S,pal}=ctx; drawLattice(S,pal,{opacity:.11,lineW:.4});
+    const g=group({filter:"url(#glowA)"});
+    for(let i=0;i<6;i++){
+      const a=S.p(0,0), b=S.stations[i], c=S.stations[(i+1)%6];
+      poly([a,b,c],{fill:i%2?pal.a:pal.b,opacity:.19,stroke:pal.c,"stroke-width":1.1,style:animStyle("arrive",1,i*.08)},g);
+    }
+    path(S.stations,{fill:"none",stroke:pal.a,"stroke-width":2,opacity:.56},g,true);
+    circle(S.p(0,0),S.unit*.09,{fill:pal.c,opacity:.95,filter:"url(#glowA)"},g);
+  }
+
+  function largeTriangles(ctx){
+    const {S,pal}=ctx; const g=group({filter:"url(#soft)"});
+    [1,2,3,4,5].forEach((n,i)=>{
+      const pts=[S.p(-n,0),S.p(n,-n),S.p(0,n)];
+      poly(pts,{fill:i%2?pal.a:pal.b,opacity:.075,stroke:i%2?pal.b:pal.a,"stroke-width":1.5,style:animStyle("breathe",1.25,i*.18)},g);
+    });
+    drawLattice(S,pal,{opacity:.12,lineW:.45,pointR:S.unit*.012});
+    circle(S.p(0,0),S.unit,{fill:"none",stroke:pal.c,"stroke-width":1,opacity:.62},g);
+  }
+
+  function meteorCells(ctx){
+    const {S,pal}=ctx; const g=group({filter:"url(#glowA)"});
+    for(let q=-10;q<=10;q++) for(let r=-10;r<=10;r++){
+      const d=axialDistance(q,r); if(d>10 || (q-r+20)%4) continue;
+      const pts=triCell(S,q,r,(q+r)%2===0);
+      poly(pts,{fill:pal.a,opacity:.14,stroke:pal.c,"stroke-width":.7,style:animStyle("pulse",.9,d*.03)},g);
+      line(pts[0],pts[1],{stroke:pal.b,"stroke-width":2.2,opacity:.34,filter:"url(#glowB)"},g);
+    }
+  }
+
+  function firstHex(ctx){
+    const {S,pal}=ctx; drawLattice(S,pal,{opacity:.15,lineW:.45});
+    const g=group({filter:"url(#glowA)"});
+    path(S.stations,{fill:"rgba(255,255,255,.02)",stroke:pal.a,"stroke-width":2.4,opacity:.92,class:"dash",style:animStyle("dash",1)},g,true);
+    for(let i=0;i<6;i++) poly([S.p(0,0),S.stations[i],S.stations[(i+1)%6]],{fill:i%2?pal.a:pal.b,opacity:.12,stroke:pal.c,"stroke-width":.55,style:animStyle("pulse",1.3,i*.07)},g);
+    circle(S.p(0,0),S.unit,{fill:"none",stroke:pal.c,"stroke-width":1.2,opacity:.7},g);
+  }
+
+  function hexPoints(S,q,r,scale=1){
+    return [[-1,0],[-1,1],[0,1],[1,0],[1,-1],[0,-1]].map(([dq,dr])=>S.p(q+dq*scale,r+dr*scale));
+  }
+
+  function honeyField(ctx){
+    const {S,pal}=ctx; const g=group({filter:"url(#glowA)"});
+    for(let q=-9;q<=9;q++) for(let r=-9;r<=9;r++){
+      if((q-r)%3!==0) continue;
+      const p=S.p(q,r); if(p.x<-S.unit*2||p.x>W+S.unit*2||p.y<-S.unit*2||p.y>H+S.unit*2) continue;
+      const d=axialDistance(q,r);
+      path(hexPoints(S,q,r,.45),{fill:pal.d,opacity:.12,stroke:d%2?pal.a:pal.b,"stroke-width":.9,style:animStyle("pulse",1.4,(d%7)*.07)},g,true);
+    }
+    drawLattice(S,pal,{opacity:.1,lineW:.35,points:false});
+  }
+
+  function brokenCrown(ctx){
+    const {S,pal}=ctx; const g=group({filter:"url(#glowB)"});
+    [2,3,4,5].forEach((n,j)=>{
+      ringCoords(n).forEach(([q,r],i)=>{
+        if(i%3===j%3) return;
+        const pts=hexPoints(S,q,r,.32);
+        path(pts,{fill:"none",stroke:j%2?pal.a:pal.b,"stroke-width":1.1,opacity:.42,style:animStyle("pulse",1.3,(i%12)*.035)},g,true);
+      });
+    });
+    circle(S.p(0,0),S.unit,{fill:"none",stroke:pal.c,"stroke-width":1.2,opacity:.62},g);
+  }
+
+  function vesicaSix(ctx){
+    const {S,pal}=ctx; drawLattice(S,pal,{opacity:.09,lineW:.35,points:false});
+    const g=group({filter:"url(#soft)"});
+    circle(S.p(0,0),S.unit,{fill:"none",stroke:pal.c,"stroke-width":1.5,opacity:.82},g);
+    S.stations.forEach((p,i)=>circle(p,S.unit,{fill:"none",stroke:i%2?pal.a:pal.b,"stroke-width":1.9,opacity:.48,style:animStyle("breathe",1.2,i*.08)},g));
+    S.stations.forEach((p,i)=>circle(p,S.unit*.055,{fill:pal.c,opacity:.92,filter:"url(#glowA)"},g));
+  }
+
+  function ringInterference(ctx){
+    const {S,pal}=ctx; const g=group({filter:"url(#glowA)"});
+    for(let n=0;n<=5;n++) ringCoords(n).forEach(([q,r],i)=>{
+      const p=S.p(q,r);
+      circle(p,S.unit,{fill:"none",stroke:n%2?pal.a:pal.b,"stroke-width":.72,opacity:Math.max(.06,.42-n*.055),style:animStyle("pulse",1.8,(n+i%6)*.05)},g);
+    });
+    drawLattice(S,pal,{opacity:.07,lineW:.3,pointR:S.unit*.008});
+  }
+
+  function lunarChords(ctx){
+    const {S,pal}=ctx; const g=group({filter:"url(#soft)"});
+    circle(S.p(0,0),S.unit*2,{fill:"none",stroke:pal.c,"stroke-width":1.1,opacity:.28},g);
+    S.stations.forEach((p,i)=>circle(p,S.unit,{fill:"none",stroke:pal.b,"stroke-width":1.25,opacity:.26,style:animStyle("pulse",1.4,i*.1)},g));
+    for(let i=0;i<6;i++){
+      line(S.stations[i],S.stations[(i+2)%6],{stroke:pal.c,"stroke-width":.9,opacity:.58,class:"dash",style:animStyle("dash",1,i*.09)},g);
+    }
+    circle(S.p(0,0),S.unit,{fill:"none",stroke:pal.a,"stroke-width":1.6,opacity:.72},g);
+  }
+
+  function latticeRain(ctx){
+    const {S,pal}=ctx; const pts=pointsInRect(S,2); const g=group({filter:"url(#glowA)"});
+    pts.forEach(p=>{
+      const d=axialDistance(p.q,p.r), op=.12+(1/(d+1))*.5;
+      circle(p,S.unit*.018*(1+(d%4)*.18),{fill:(p.q+p.r)%2?pal.a:pal.b,opacity:op,style:animStyle("pulse",1.1,(p.q*13+p.r*7)%17*.03)},g);
+      if((p.q-p.r)%5===0) line(p,S.p(p.q+1,p.r-1),{stroke:pal.c,"stroke-width":.5,opacity:.15},g);
+    });
+  }
+
+  function ringMap(ctx){
+    const {S,pal}=ctx; drawLattice(S,pal,{opacity:.08,lineW:.35,pointR:S.unit*.01});
+    const g=group({filter:"url(#glowA)"});
+    for(let n=0;n<=7;n++){
+      const pts=ringCoords(n).map(([q,r])=>S.p(q,r));
+      if(n>0) path(pts,{fill:"none",stroke:n%2?pal.a:pal.b,"stroke-width":1.25,opacity:.55-n*.045,style:animStyle("pulse",1.2,n*.08)},g,true);
+      pts.forEach(p=>circle(p,S.unit*.025,{fill:pal.c,opacity:.5},g));
+    }
+    circle(S.p(0,0),S.unit,{fill:"none",stroke:pal.c,"stroke-width":1.2,opacity:.7},g);
+  }
+
+  function coastNet(ctx){
+    const {S,pal}=ctx; const pts=pointsInRect(S,2); const g=group({filter:"url(#glowA)"});
+    pts.forEach(p=>{
+      if(p.y < H*.22 || p.y > H*.92) return;
+      [[1,0],[0,1],[1,-1]].forEach(([dq,dr],i)=>{
+        const p2=S.p(p.q+dq,p.r+dr);
+        if(p2.y>H*.22 && p2.y<H*.92) line(p,p2,{stroke:i?pal.b:pal.a,"stroke-width":.65,opacity:.18+(Math.sin((p.q+p.r)*.9)+1)*.08,style:animStyle("pulse",1.6,((p.q-p.r)%11)*.04)},g);
+      });
+      if((p.q+p.r)%4===0) circle(p,S.unit*.025,{fill:pal.c,opacity:.55},g);
+    });
+    circle(S.p(0,0),S.unit,{fill:"none",stroke:pal.a,"stroke-width":1.3,opacity:.55},g);
+  }
+
+  function twelveEchoes(ctx){
+    const {S,pal}=ctx; const g=group({filter:"url(#soft)"});
+    [1,2,3].forEach((s,j)=>{
+      S.stationsQR.forEach(([q,r],i)=>circle(S.p(q*s,r*s),S.unit,{fill:"none",stroke:(i+j)%2?pal.a:pal.b,"stroke-width":1.05,opacity:.28,style:animStyle("pulse",1.5,(i+j)*.06)},g));
+      path(hexPoints(S,0,0,s),{fill:"none",stroke:j%2?pal.b:pal.a,"stroke-width":1.2,opacity:.5},g,true);
+    });
+    [[0,3],[1,4],[2,5]].forEach(([a,b])=>line(S.stations[a],S.stations[b],{stroke:pal.c,"stroke-width":.75,opacity:.5},g));
+  }
+
+  function stationWheel(ctx){
+    const {S,pal}=ctx; const wheel=group({class:"svg-origin",style:animStyle("turn",3)});
+    const g=group({filter:"url(#glowA)"},wheel);
+    for(let n=1;n<=5;n++){
+      ringCoords(n).forEach(([q,r],i)=>{
+        if(i%n!==0) circle(S.p(q,r),S.unit*.2,{fill:"none",stroke:i%2?pal.a:pal.b,"stroke-width":.8,opacity:.2+(n*.03)},g);
+      });
+      path(ringCoords(n).map(([q,r])=>S.p(q,r)),{fill:"none",stroke:n%2?pal.b:pal.a,"stroke-width":.8,opacity:.22},g,true);
+    }
+    circle(S.p(0,0),S.unit,{fill:"none",stroke:pal.c,"stroke-width":1.4,opacity:.8},g);
+  }
+
+  function breathingCrown(ctx){
+    const {S,pal}=ctx; const g=group({filter:"url(#glowB)"});
+    for(let n=2;n<=6;n++){
+      ringCoords(n).forEach(([q,r],i)=>{
+        if(i%2) return;
+        const pts=triCell(S,q,r,(i+n)%2===0);
+        poly(pts,{fill:n%2?pal.a:pal.b,opacity:.12,stroke:pal.c,"stroke-width":.75,style:animStyle("pulse",1,(i%18)*.035)},g);
+      });
+    }
+    path(S.stations,{fill:"rgba(255,255,255,.02)",stroke:pal.a,"stroke-width":2,opacity:.75},g,true);
+  }
+
+  function nightSignal(ctx){
+    const {S,pal}=ctx; const g=group({filter:"url(#glowA)"});
+    drawLattice(S,pal,{opacity:.1,lineW:.42,pointR:S.unit*.01});
+    [1,2,3,5].forEach((n,i)=>circle(S.p(0,0),S.unit*n,{fill:"none",stroke:i%2?pal.b:pal.a,"stroke-width":i===0?2.5:1,opacity:.54/(i+1),style:animStyle("breathe",1.4,i*.1)},g));
+    for(let q=-7;q<=7;q+=2) line(S.p(q,-9),S.p(q,9),{stroke:pal.a,"stroke-width":q===0?3:1.2,opacity:q===0?.62:.18,style:animStyle("glowline",1.2,Math.abs(q)*.04)},g);
+    path(S.stations,{fill:"none",stroke:pal.c,"stroke-width":1.2,opacity:.76},g,true);
+  }
+
+  function glassMonastery(ctx){
+    const {S,pal}=ctx; const g=group({filter:"url(#soft)"});
+    for(let r=-10;r<=10;r++){
+      line(S.p(-9,r),S.p(9,r),{stroke:pal.c,"stroke-width":.45,opacity:.09},g);
+      if(r%2===0) line(S.p(r,-9),S.p(r,9),{stroke:pal.a,"stroke-width":.7,opacity:.14,style:animStyle("pulse",1.8,(r+10)*.03)},g);
+    }
+    [1,2,3,4].forEach((n,i)=>path(hexPoints(S,0,0,n),{fill:i===2?pal.d:"none",opacity:i===2?.16:1,stroke:i%2?pal.b:pal.a,"stroke-width":1.3,style:animStyle("breathe",1.5,i*.12)},g,true));
+    S.stations.forEach(p=>circle(p,S.unit*.34,{fill:"none",stroke:pal.c,"stroke-width":1,opacity:.42},g));
+  }
+
+  function auroraField(ctx){
+    const {S,pal}=ctx; const g=group({filter:"url(#soft)",style:animStyle("drift",1.4)});
+    for(let n=0;n<=5;n++) ringCoords(n).forEach(([q,r],i)=>{
+      const p=S.p(q,r);
+      circle(p,S.unit*(.7+(n%3)*.22),{fill:"none",stroke:i%2?pal.a:pal.b,"stroke-width":.9,opacity:.2,style:animStyle("pulse",1.7,(i+n)*.04)},g);
+    });
+    drawLattice(S,pal,{opacity:.09,lineW:.36,pointR:S.unit*.008});
+    path(S.stations,{fill:"none",stroke:pal.c,"stroke-width":1.3,opacity:.68},g,true);
+  }
+
+  function render(t=0){
+    const plate = plates[index];
+    const pal = palettes[plate.palette];
+    baseScene(plate.palette);
+    const unit = viewStrategy(plate.viewport);
+    const rotate = plate.viewport.includes("diagonal") ? Math.PI/9 : 0;
+    const ox = plate.viewport.includes("horizon") ? W*.5 : CX;
+    const oy = plate.viewport.includes("horizon") ? H*.58 : CY;
+    const S = substrate(unit, ox, oy, rotate);
+    plate.draw({S,pal,t,plate});
+    updateMeta();
+  }
+
+  function loop(t){
+    if(playing && !still && !reduced) render(t);
+    requestAnimationFrame(loop);
+  }
+
+  function updateMeta(){
+    const p=plates[index], pal=palettes[p.palette];
+    famEl.textContent = p.family;
+    titleEl.textContent = p.title;
+    idEl.textContent = p.id;
+    palEl.textContent = pal.name;
+    viewEl.textContent = p.viewport;
+    effEl.textContent = p.effects;
+    Array.from(deck.children).forEach((c,i)=>c.classList.toggle("active", i===index));
+    if(familySelect.value !== p.family) familySelect.value = p.family;
+  }
+
+  function buildDeck(){
+    deck.replaceChildren();
+    plates.forEach((p,i)=>{
+      const b=document.createElement("button");
+      b.className="card";
+      b.style.setProperty("--c", palettes[p.palette].a);
+      b.innerHTML=`<span>${String(i+1).padStart(2,"0")}</span>`;
+      b.title = `${p.id} — ${p.title}`;
+      b.addEventListener("click",()=>{index=i; render(performance.now());});
+      deck.appendChild(b);
+    });
+    familySelect.replaceChildren();
+    const all = document.createElement("option");
+    all.value = plates[0].family;
+    all.textContent = "Jump Family";
+    all.disabled = true;
+    familySelect.appendChild(all);
+    families.forEach(f=>{
+      const o=document.createElement("option");
+      o.value=f; o.textContent=f;
+      familySelect.appendChild(o);
+    });
+    familySelect.addEventListener("change",()=>{
+      const i=plates.findIndex(p=>p.family===familySelect.value);
+      if(i>=0){index=i; render(performance.now());}
+    });
+  }
+
+  function resize(){
+    W = window.innerWidth; H = window.innerHeight; CX=W/2; CY=H/2;
+    svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+    render(performance.now());
+  }
+
+  function nav(delta){
+    index = (index + delta + plates.length) % plates.length;
+    render(performance.now());
+    pulseTone();
+  }
+
+  function toggleAudio(){
+    if(!audioCtx){
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      drone = audioCtx.createOscillator();
+      gain = audioCtx.createGain();
+      drone.type = "sine";
+      drone.frequency.value = 110;
+      gain.gain.value = 0;
+      drone.connect(gain).connect(audioCtx.destination);
+      drone.start();
+    }
+    audioOn = !audioOn;
+    if(audioCtx.state === "suspended") audioCtx.resume();
+    gain.gain.cancelScheduledValues(audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(audioOn ? .025 : 0, audioCtx.currentTime + .2);
+    $("audio").textContent = audioOn ? "Audio On" : "Audio Off";
+  }
+
+  function pulseTone(){
+    if(!audioOn || !gain || !drone) return;
+    const p=plates[index], f=90 + (families.indexOf(p.family)+1)*18;
+    const now=audioCtx.currentTime;
+    drone.frequency.cancelScheduledValues(now);
+    drone.frequency.setValueAtTime(f, now);
+    drone.frequency.exponentialRampToValueAtTime(f*1.5, now+.08);
+    drone.frequency.exponentialRampToValueAtTime(f, now+.35);
+  }
+
+  $("prev").addEventListener("click",()=>nav(-1));
+  $("next").addEventListener("click",()=>nav(1));
+  $("play").addEventListener("click",()=>{
+    playing=!playing;
+    $("play").textContent=playing?"Pause":"Play";
+    render(performance.now());
+  });
+  $("mode").addEventListener("click",()=>{
+    still=!still;
+    $("mode").textContent=still?"Still":"Runtime";
+    render(performance.now());
+  });
+  $("ui").addEventListener("click",()=>{
+    document.body.classList.toggle("hideMeta");
+    $("ui").textContent=document.body.classList.contains("hideMeta")?"Show UI":"Hide UI";
+  });
+  $("audio").addEventListener("click", toggleAudio);
+
+  window.addEventListener("keydown",(e)=>{
+    if(e.key==="ArrowRight") nav(1);
+    if(e.key==="ArrowLeft") nav(-1);
+    if(e.key===" "){ e.preventDefault(); $("play").click(); }
+    if(e.key.toLowerCase()==="s") $("mode").click();
+    if(e.key.toLowerCase()==="h") $("ui").click();
+    if(e.key.toLowerCase()==="a") $("audio").click();
+  });
+
+  svg.addEventListener("pointermove",(e)=>{
+    pointer.x=e.clientX/W; pointer.y=e.clientY/H; pointer.active=true;
+  });
+
+  window.addEventListener("resize",resize);
+  buildDeck();
+  resize();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
