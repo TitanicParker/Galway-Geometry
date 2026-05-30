@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Galway Geometry - Lawful Emergence Instrument</title>
+<style>
+  html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #0d0f14;
+    color: #f4f0e7;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  #app {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 16%, rgba(255,255,255,0.08), transparent 34%), #0d0f14;
+  }
+
+  svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .ui {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 16px;
+    display: grid;
+    gap: 10px;
+    pointer-events: none;
+  }
+
+  .caption {
+    justify-self: center;
+    max-width: calc(100vw - 32px);
+    padding: 10px 14px;
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 999px;
+    background: rgba(8,10,14,0.66);
+    color: rgba(244,240,231,0.72);
+    backdrop-filter: blur(12px);
+    font-size: 12px;
+    line-height: 1.25;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    text-align: center;
+    pointer-events: auto;
+  }
+
+  .controls {
+    display: flex;
+    justify-content: center;
+    gap: 9px;
+    flex-wrap: wrap;
+    pointer-events: auto;
+  }
+
+  button {
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 999px;
+    min-width: 78px;
+    padding: 10px 13px;
+    background: rgba(255,255,255,0.08);
+    color: #f4f0e7;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    padding: 8px 10px;
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 999px;
+    background: rgba(8,10,14,0.66);
+    color: rgba(244,240,231,0.74);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .frame {
+    fill: none;
+    stroke: rgba(255,255,255,0.16);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .stroke {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    opacity: 0;
+    animation-name: draw;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+
+  .cell {
+    stroke: rgba(255,255,255,0.22);
+    stroke-width: 0.55;
+    vector-effect: non-scaling-stroke;
+    opacity: 0;
+    fill-opacity: 0;
+    animation-name: fillIn;
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
+  }
+
+  .node {
+    opacity: 0;
+    animation-name: nodeIn;
+    animation-duration: 420ms;
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
+  }
+
+  @keyframes draw {
+    0% { opacity: 0; stroke-dashoffset: 1; }
+    15% { opacity: 1; }
+    100% { opacity: var(--op); stroke-dashoffset: 0; }
+  }
+
+  @keyframes fillIn {
+    0% { opacity: 0; fill-opacity: 0; }
+    100% { opacity: 1; fill-opacity: var(--fa); }
+  }
+
+  @keyframes nodeIn {
+    0% { opacity: 0; transform: scale(0); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+</style>
+</head>
+<body>
+<main id="app">
+  <svg id="plate" aria-label="Galway Geometry lawful emergence"></svg>
+  <div class="badge" id="badge">mode</div>
+  <section class="ui">
+    <div class="caption" id="caption">Lawful emergence</div>
+    <div class="controls">
+      <button id="prevBtn" type="button">Prev</button>
+      <button id="replayBtn" type="button">Replay</button>
+      <button id="nextBtn" type="button">Next</button>
+      <button id="autoBtn" type="button">Auto On</button>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  var NS = 'http://www.w3.org/2000/svg';
+  var SQRT3 = Math.sqrt(3);
+  var svg = document.getElementById('plate');
+  var badge = document.getElementById('badge');
+  var caption = document.getElementById('caption');
+  var prevBtn = document.getElementById('prevBtn');
+  var replayBtn = document.getElementById('replayBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var autoBtn = document.getElementById('autoBtn');
+
+  var modes = [
+    'Unit Becomes Field',
+    'Circle Becomes Station Source',
+    'Hex Chamber Settlement',
+    'Twenty Become Three',
+    'Shell Breath',
+    'Three-Family Edge Instrument'
+  ];
+
+  var palette = {
+    bg: '#0d0f14',
+    line: '#f4f0e7',
+    a: '#83eaff',
+    b: '#ffd166',
+    c: '#ff7f6e',
+    d: '#a7f3a1',
+    e: '#b79cff',
+    fills: ['#142032', '#203f53', '#336c78', '#8f6a3c', '#b65c4d', '#765375', '#e8dec4', '#171b22']
+  };
+
+  var dirs = [[1,0], [0,1], [-1,1], [-1,0], [0,-1], [1,-1]];
+  var edgeDirs = [[1,0], [0,1], [1,-1]];
+
+  var state = {
+    seed: Math.floor(Math.random() * 1000000000),
+    mode: 0,
+    auto: true,
+    timer: null,
+    duration: 7800
+  };
+
+  function rngFrom(seed) {
+    return function () {
+      var t = seed += 0x6D2B79F5;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+  function mod(n, m) { return ((n % m) + m) % m; }
+
+  function el(tag, attrs, parent) {
+    var node = document.createElementNS(NS, tag);
+    var key;
+    for (key in attrs) {
+      if (Object.prototype.hasOwnProperty.call(attrs, key) && attrs[key] !== null && attrs[key] !== undefined) {
+        node.setAttribute(key, attrs[key]);
+      }
+    }
+    (parent || svg).appendChild(node);
+    return node;
+  }
+
+  function css(obj) {
+    var out = '';
+    var key;
+    for (key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) out += key + ':' + obj[key] + ';';
+    }
+    return out;
+  }
+
+  function shade(hex, amount) {
+    var n = parseInt(hex.replace('#', ''), 16);
+    var r = (n >> 16) & 255;
+    var g = (n >> 8) & 255;
+    var b = n & 255;
+    if (amount >= 0) {
+      r += (255 - r) * amount;
+      g += (255 - g) * amount;
+      b += (255 - b) * amount;
+    } else {
+      r *= 1 + amount;
+      g *= 1 + amount;
+      b *= 1 + amount;
+    }
+    return 'rgb(' + Math.round(clamp(r,0,255)) + ',' + Math.round(clamp(g,0,255)) + ',' + Math.round(clamp(b,0,255)) + ')';
+  }
+
+  function spec() {
+    var w = window.innerWidth || 390;
+    var h = window.innerHeight || 780;
+    var unit = clamp(Math.min(w, h) * 0.058, 18, 32);
+    var extent = Math.ceil(Math.max(w / unit, h / unit) * 0.95) + 5;
+    var rng = rngFrom(state.seed + state.mode * 100003);
+    return {
+      w: w,
+      h: h,
+      unit: unit,
+      extent: extent,
+      originX: w / 2 + (rng() - 0.5) * unit,
+      originY: h / 2 + (rng() - 0.5) * unit,
+      cq: Math.round((rng() - 0.5) * 2),
+      cr: Math.round((rng() - 0.5) * 2),
+      rng: rng
+    };
+  }
+
+  function P(f, q, r) {
+    return {
+      x: f.originX + f.unit * (q + r / 2),
+      y: f.originY - f.unit * (r * SQRT3 / 2)
+    };
+  }
+
+  function visible(f, p, pad) {
+    pad = pad || f.unit * 2;
+    return p.x > -pad && p.x < f.w + pad && p.y > -pad && p.y < f.h + pad;
+  }
+
+  function cube(q, r) { return { x: q, y: -q - r, z: r }; }
+
+  function shell(q1, r1, q2, r2) {
+    var a = cube(q1, r1);
+    var b = cube(q2 || 0, r2 || 0);
+    return Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y), Math.abs(a.z - b.z));
+  }
+
+  function pathFromPoints(points, close) {
+    var d = 'M ' + points[0].x.toFixed(2) + ' ' + points[0].y.toFixed(2);
+    var i;
+    for (i = 1; i < points.length; i++) d += ' L ' + points[i].x.toFixed(2) + ' ' + points[i].y.toFixed(2);
+    return close ? d + ' Z' : d;
+  }
+
+  function pointString(points) {
+    var out = [];
+    var i;
+    for (i = 0; i < points.length; i++) out.push(points[i].x.toFixed(2) + ',' + points[i].y.toFixed(2));
+    return out.join(' ');
+  }
+
+  function drawLine(parent, a, b, color, width, delay, duration, op) {
+    return el('path', {
+      d: 'M ' + a.x.toFixed(2) + ' ' + a.y.toFixed(2) + ' L ' + b.x.toFixed(2) + ' ' + b.y.toFixed(2),
+      class: 'stroke',
+      pathLength: 1,
+      stroke: color,
+      'stroke-width': width,
+      style: css({ 'animation-delay': delay + 'ms', 'animation-duration': duration + 'ms', '--op': op })
+    }, parent);
+  }
+
+  function drawPath(parent, points, color, width, delay, duration, close, op) {
+    if (!points || points.length < 2) return null;
+    return el('path', {
+      d: pathFromPoints(points, close),
+      class: 'stroke',
+      pathLength: 1,
+      stroke: color,
+      'stroke-width': width,
+      style: css({ 'animation-delay': delay + 'ms', 'animation-duration': duration + 'ms', '--op': op })
+    }, parent);
+  }
+
+  function drawPoly(parent, points, fill, delay, duration, fa) {
+    if (!points || points.length < 3) return null;
+    return el('polygon', {
+      points: pointString(points),
+      class: 'cell',
+      fill: fill,
+      style: css({ 'animation-delay': delay + 'ms', 'animation-duration': duration + 'ms', '--fa': fa })
+    }, parent);
+  }
+
+  function drawCircle(parent, p, radius, color, width, delay, duration, op) {
+    return el('circle', {
+      cx: p.x,
+      cy: p.y,
+      r: radius,
+      class: 'stroke',
+      pathLength: 1,
+      stroke: color,
+      'stroke-width': width,
+      fill: 'none',
+      style: css({ 'animation-delay': delay + 'ms', 'animation-duration': duration + 'ms', '--op': op })
+    }, parent);
+  }
+
+  function drawDot(parent, p, radius, color, delay) {
+    return el('circle', {
+      cx: p.x,
+      cy: p.y,
+      r: radius,
+      class: 'node',
+      fill: color,
+      style: css({ 'animation-delay': delay + 'ms' })
+    }, parent);
+  }
+
+  function collectEdges(f) {
+    var list = [];
+    var q, r, i, a, b, d;
+    for (q = -f.extent; q <= f.extent; q++) {
+      for (r = -f.extent; r <= f.extent; r++) {
+        a = P(f, q, r);
+        if (!visible(f, a)) continue;
+        for (i = 0; i < edgeDirs.length; i++) {
+          d = edgeDirs[i];
+          b = P(f, q + d[0], r + d[1]);
+          if (!visible(f, b)) continue;
+          list.push({ q: q, r: r, family: i, a: a, b: b, midX: (a.x + b.x) / 2, midY: (a.y + b.y) / 2, shell: shell(q, r, f.cq, f.cr) });
+        }
+      }
+    }
+    return list;
+  }
+
+  function collectPoints(f) {
+    var list = [];
+    var q, r, p;
+    for (q = -f.extent; q <= f.extent; q++) {
+      for (r = -f.extent; r <= f.extent; r++) {
+        p = P(f, q, r);
+        if (visible(f, p)) list.push({ q: q, r: r, p: p, shell: shell(q, r, f.cq, f.cr) });
+      }
+    }
+    return list;
+  }
+
+  function collectTriangles(f) {
+    var list = [];
+    var q, r, p0, p1, p2, p3, c0, c1;
+    for (q = -f.extent; q <= f.extent; q++) {
+      for (r = -f.extent; r <= f.extent; r++) {
+        p0 = P(f, q, r);
+        p1 = P(f, q + 1, r);
+        p2 = P(f, q, r + 1);
+        p3 = P(f, q + 1, r - 1);
+        c0 = { x: (p0.x + p1.x + p2.x) / 3, y: (p0.y + p1.y + p2.y) / 3 };
+        c1 = { x: (p0.x + p1.x + p3.x) / 3, y: (p0.y + p1.y + p3.y) / 3 };
+        if (visible(f, c0)) list.push({ q: q, r: r, o: 0, pts: [p0, p1, p2], c: c0, shell: shell(q, r, f.cq, f.cr) });
+        if (visible(f, c1)) list.push({ q: q, r: r, o: 1, pts: [p0, p3, p1], c: c1, shell: shell(q, r, f.cq, f.cr) });
+      }
+    }
+    return list;
+  }
+
+  function collectHexes(f) {
+    var list = [];
+    var range = f.extent + 5;
+    var i, j, q, r, c, verts;
+    for (i = -range; i <= range; i++) {
+      for (j = -range; j <= range; j++) {
+        q = i - j;
+        r = i + 2 * j;
+        c = P(f, q, r);
+        if (!visible(f, c, f.unit * 3)) continue;
+        verts = [P(f,q-1,r), P(f,q-1,r+1), P(f,q,r+1), P(f,q+1,r), P(f,q+1,r-1), P(f,q,r-1)];
+        list.push({ i: i, j: j, q: q, r: r, c: c, verts: verts, shell: Math.max(Math.abs(i), Math.abs(j), Math.abs(i + j)) });
+      }
+    }
+    return list;
+  }
+
+  function firstStations(f) {
+    return [P(f,f.cq-1,f.cr), P(f,f.cq-1,f.cr+1), P(f,f.cq,f.cr+1), P(f,f.cq+1,f.cr), P(f,f.cq+1,f.cr-1), P(f,f.cq,f.cr-1)];
+  }
+
+  function renderBase(f) {
+    el('rect', { x: 0, y: 0, width: f.w, height: f.h, fill: palette.bg });
+    el('rect', { class: 'frame', x: 10, y: 10, width: f.w - 20, height: f.h - 20, rx: 26, ry: 26 });
+  }
+
+  function modeUnitField(f) {
+    var g = el('g', {});
+    var c = P(f, f.cq, f.cr);
+    var A = P(f, f.cq - 1, f.cr);
+    var B = P(f, f.cq - 1, f.cr + 1);
+    var C = P(f, f.cq, f.cr + 1);
+    var e = collectEdges(f);
+    var i, color;
+
+    drawDot(g, c, 3, palette.line, 80);
+    drawLine(g, c, A, palette.a, 1.5, 220, 700, 1);
+    drawCircle(g, c, f.unit, palette.b, 1.1, 850, 900, 1);
+    drawLine(g, A, B, palette.c, 1.5, 1380, 620, 1);
+    drawPoly(g, [c,A,B], shade(palette.b, -0.25), 1840, 540, 0.42);
+    drawLine(g, B, C, palette.d, 1.45, 2280, 560, 1);
+
+    e.sort(function (x, y) { return x.shell - y.shell || x.family - y.family || x.midY - y.midY; });
+    for (i = 0; i < e.length; i++) {
+      color = [palette.a, palette.b, palette.c][e[i].family];
+      drawLine(g, e[i].a, e[i].b, color, 0.55, 2850 + i * 1.25, 660, 0.72);
+    }
+    return 'Unit Becomes Field - radius, chord, triangle side, then full unit-edge field';
+  }
+
+  function modeCircleSource(f) {
+    var g = el('g', {});
+    var c = P(f, f.cq, f.cr);
+    var s = firstStations(f);
+    var pts = collectPoints(f);
+    var i;
+    pts.sort(function (a, b) { return a.shell - b.shell || a.p.y - b.p.y; });
+
+    drawDot(g, c, 3, palette.line, 70);
+    drawCircle(g, c, f.unit, palette.b, 1.35, 140, 980, 1);
+    for (i = 0; i < 6; i++) drawDot(g, s[i], 2.5, [palette.a,palette.b,palette.c][i % 3], 650 + i * 90);
+    for (i = 0; i < 6; i++) drawLine(g, s[i], s[(i + 1) % 6], palette.line, 0.75, 1120 + i * 70, 480, 0.78);
+    for (i = 0; i < pts.length; i++) drawCircle(g, pts[i].p, f.unit, palette.line, 0.42, 2250 + i * 4.8, 780, 0.24);
+    return 'Circle Becomes Station Source - first circle becomes portable centre-function';
+  }
+
+  function modeHexChamber(f) {
+    var g = el('g', {});
+    var hs = collectHexes(f);
+    var i, k, h, base, fill, delay;
+    hs.sort(function (a, b) { return a.shell - b.shell || a.c.y - b.c.y || a.c.x - b.c.x; });
+    for (i = 0; i < hs.length; i++) {
+      h = hs[i];
+      base = palette.fills[mod(h.shell + h.i - h.j + 40, palette.fills.length)];
+      delay = 160 + i * 18;
+      for (k = 0; k < 6; k++) {
+        fill = shade(base, [0.22,0.08,-0.08,-0.22,-0.04,0.15][k]);
+        drawPoly(g, [h.c, h.verts[k], h.verts[(k + 1) % 6]], fill, delay + k * 18, 390, 0.72);
+      }
+      drawPath(g, h.verts, palette.line, 0.62, delay + 120, 520, true, 0.72);
+    }
+    return 'Hex Chamber Settlement - contiguous legal honeycomb, no skip-one gaps';
+  }
+
+  function modeIdentity(f) {
+    var g = el('g', {});
+    var O = P(f, f.cq, f.cr);
+    var S = firstStations(f);
+    var triples = [];
+    var i, j, k, t, family, col;
+    for (i = 0; i < 6; i++) for (j = i + 1; j < 6; j++) for (k = j + 1; k < 6; k++) triples.push([i,j,k]);
+
+    drawDot(g, O, 3, palette.line, 80);
+    drawCircle(g, O, f.unit, palette.b, 1.25, 140, 900, 1);
+    for (i = 0; i < 6; i++) drawDot(g, S[i], 2.4, palette.line, 580 + i * 60);
+    for (i = 0; i < 6; i++) drawLine(g, S[i], S[(i + 1) % 6], palette.line, 0.75, 920 + i * 45, 420, 0.75);
+
+    for (i = 0; i < triples.length; i++) {
+      t = triples[i];
+      family = familyFromTriple(t);
+      col = family === '114' ? palette.c : family === '222' ? palette.d : palette.a;
+      drawPoly(g, [S[t[0]], S[t[1]], S[t[2]]], col, 1450 + i * 55, 420, family === '123' ? 0.13 : 0.18);
+      drawPath(g, [S[t[0]], S[t[1]], S[t[2]]], col, family === '222' ? 1.05 : 0.62, 1530 + i * 55, 420, true, 0.7);
+    }
+    return 'Twenty Become Three - twenty boundary triangles collapse into three identity families';
+  }
+
+  function familyFromTriple(t) {
+    var a = t[0], b = t[1], c = t[2];
+    var gaps = [b-a, c-b, a+6-c].sort(function (x, y) { return x - y; }).join('');
+    if (gaps === '114') return '114';
+    if (gaps === '222') return '222';
+    return '123';
+  }
+
+  function modeShellBreath(f) {
+    var g = el('g', {});
+    var tris = collectTriangles(f);
+    var e = collectEdges(f);
+    var i, tri, base, rings, pts;
+    tris.sort(function (a, b) { return a.shell - b.shell || a.c.y - b.c.y; });
+    for (i = 0; i < tris.length; i++) {
+      tri = tris[i];
+      base = palette.fills[mod(tri.shell + tri.o * 3 + 20, palette.fills.length)];
+      drawPoly(g, tri.pts, shade(base, tri.o ? -0.13 : 0.1), 120 + tri.shell * 180 + (i % 17) * 7, 520, 0.46);
+    }
+    for (i = 0; i < e.length; i++) drawLine(g, e[i].a, e[i].b, palette.line, 0.42, 2550 + e[i].shell * 80 + (i % 13) * 8, 900, 0.22);
+    for (rings = 1; rings <= Math.min(9, f.extent); rings++) {
+      pts = shellRing(f, f.cq, f.cr, rings);
+      if (pts.length > 2) drawPath(g, pts, [palette.a,palette.b,palette.c][rings % 3], 0.78, 360 + rings * 190, 820, true, 0.62);
+    }
+    return 'Shell Breath - axial shell distance makes the field inhale into visibility';
+  }
+
+  function shellRing(f, cq, cr, n) {
+    var out = [];
+    var q = cq + dirs[4][0] * n;
+    var r = cr + dirs[4][1] * n;
+    var side, step, d, p;
+    for (side = 0; side < 6; side++) {
+      d = dirs[side];
+      for (step = 0; step < n; step++) {
+        p = P(f, q, r);
+        if (visible(f, p, f.unit * 3)) out.push(p);
+        q += d[0];
+        r += d[1];
+      }
+    }
+    return out;
+  }
+
+  function modeEdgeInstrument(f) {
+    var g = el('g', {});
+    var e = collectEdges(f);
+    var fam, famEdges, i, vectors, vx, vy, delay, col, width;
+    vectors = [[1,0.1],[-0.25,1],[1,1]];
+    for (fam = 0; fam < 3; fam++) {
+      famEdges = [];
+      for (i = 0; i < e.length; i++) if (e[i].family === fam) famEdges.push(e[i]);
+      vx = vectors[fam][0];
+      vy = vectors[fam][1];
+      famEdges.sort(function (a, b) { return (a.midX * vx + a.midY * vy) - (b.midX * vx + b.midY * vy); });
+      for (i = 0; i < famEdges.length; i++) {
+        delay = 160 + fam * 950 + (i / Math.max(1, famEdges.length - 1)) * 1250;
+        col = [palette.a,palette.b,palette.c][fam];
+        width = fam === 0 ? 1.05 : fam === 1 ? 0.82 : 0.58;
+        drawLine(g, famEdges[i].a, famEdges[i].b, col, width, delay, fam === 2 ? 420 : 620, fam === 2 ? 0.64 : 0.86);
+      }
+    }
+    return 'Three-Family Edge Instrument - three legal edge directions arrive as hand, laser, electron';
+  }
+
+  function render() {
+    var f = spec();
+    var text = '';
+    clearTimeout(state.timer);
+    svg.innerHTML = '';
+    svg.setAttribute('viewBox', '0 0 ' + f.w + ' ' + f.h);
+    svg.setAttribute('preserveAspectRatio', 'none');
+    renderBase(f);
+
+    if (state.mode === 0) text = modeUnitField(f);
+    if (state.mode === 1) text = modeCircleSource(f);
+    if (state.mode === 2) text = modeHexChamber(f);
+    if (state.mode === 3) text = modeIdentity(f);
+    if (state.mode === 4) text = modeShellBreath(f);
+    if (state.mode === 5) text = modeEdgeInstrument(f);
+
+    badge.textContent = 'Mode ' + (state.mode + 1) + '/' + modes.length;
+    caption.textContent = text;
+    if (state.auto) state.timer = setTimeout(next, state.duration + 1000);
+  }
+
+  function next() {
+    state.mode = (state.mode + 1) % modes.length;
+    state.seed = (state.seed + 982451653 + state.mode * 7919) % 2147483647;
+    render();
+  }
+
+  function prev() {
+    state.mode = (state.mode + modes.length - 1) % modes.length;
+    state.seed = (state.seed + 982451653 + state.mode * 7919) % 2147483647;
+    render();
+  }
+
+  prevBtn.onclick = prev;
+  nextBtn.onclick = next;
+  replayBtn.onclick = render;
+  autoBtn.onclick = function () {
+    state.auto = !state.auto;
+    autoBtn.textContent = state.auto ? 'Auto On' : 'Auto Off';
+    render();
+  };
+
+  svg.onclick = next;
+  window.onkeydown = function (ev) {
+    if (ev.key === 'ArrowRight' || ev.key === ' ') next();
+    if (ev.key === 'ArrowLeft') prev();
+    if (ev.key === 'r' || ev.key === 'R') render();
+  };
+
+  window.onresize = function () { render(); };
+
+  render();
+}());
+</script>
+</body>
+</html>
