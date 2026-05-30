@@ -4,20 +4,21 @@
   function clear(node){while(node&&node.firstChild)node.removeChild(node.firstChild);}
   function reduced(){return window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;}
   function statesFor(plate){
-    return [
-      {label:'field',view:'minimal',hold:1400},
-      {label:'compose',view:'field',hold:2200},
+    if(plate.sequence&&plate.sequence.length)return plate.sequence;
+    return[
+      {label:'field',view:'minimal',hold:1200},
+      {label:'compose',view:'field',hold:1800},
       {label:'relation',view:plate.view,hold:3200},
       {label:'release',view:'minimal',hold:1600}
     ];
   }
   function renderStage(stage,plate,state){
     clear(stage);
-    stage.dataset.view=state.view;
+    stage.dataset.view=state.view||plate.view;
     stage.dataset.width='900';
     stage.dataset.height='620';
-    stage.dataset.unit=plate.unit;
-    stage.dataset.shells=plate.shells;
+    stage.dataset.unit=state.unit||plate.unit;
+    stage.dataset.shells=state.shells||plate.shells;
     stage.setAttribute('data-substrate-viewport','');
     stage.setAttribute('aria-label',plate.title+' reader viewport, '+state.label+' state');
     window.GalwaySubstrateViewport.draw(stage);
@@ -41,7 +42,7 @@
       if(stage)renderStage(stage,plate,state);
       text(phase,state.label);
       index++;
-      if(running&&!reduced())timer=setTimeout(step,state.hold);
+      if(running&&!reduced())timer=setTimeout(step,state.hold||1800);
     }
     step();
     var toggle=document.querySelector('[data-reader-toggle]');
