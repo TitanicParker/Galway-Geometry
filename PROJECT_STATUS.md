@@ -8,9 +8,27 @@ The user wants an all-HTML public site, friendly to GitHub Pages, with no framew
 
 The public front door is not a theorem manifesto. It is a place for geometric art, mandalas, tessellations, colouring, field drawing, visual exhibitions, and later deeper study.
 
+## Lawful Visual Constraint
+
+The central quality rule is now explicit:
+
+No geometry image should betray the lawfulness of the field.
+
+This is not a slogan for the public site. It is an internal production rule. Any SVG preview, gallery image, visual plate, mandala, tessellation, or generated field drawing should be built from, or visibly consistent with, the lawful substrate.
+
+The lawful substrate is the unit triangular field generated from the fixed compass radius. A visual geometry element should use lawful stations, lawful circle centres, lawful equal-radius circles, lawful unit chords, lawful equilateral cells, lawful diameters, lawful field coordinates, or authored plate events that preserve those relations.
+
+UI panels, cards, buttons, and ordinary page layout may use normal HTML boxes. The constraint governs visual geometry and visual claims.
+
+The full quality note is now recorded at:
+
+```text
+notes/lawful-visual-quality.md
+```
+
 ## Current Status
 
-The repository now has a public site spine, working navigation sections, shared styling, shared scripts, documentation, a custom 404, GitHub Pages support, a basic field canvas tool, a basic plate reader engine, and the first exhibition route.
+The repository now has a public site spine, working navigation sections, shared styling, shared scripts, documentation, a custom 404, GitHub Pages support, a basic field canvas tool, a basic plate reader engine, the first exhibition route, repaired section roots, repaired child routes, and a static Daily Geometry prototype.
 
 A recent upload repair pass was required because some child pages were accidentally uploaded over section-root `index.html` files. The affected section roots have been repaired.
 
@@ -74,6 +92,8 @@ Galway-Geometry/
 │   ├── construction-ledger/
 │   ├── companion/
 │   └── visual-relations/
+├── daily/
+│   └── index.html
 ├── exhibitions/
 │   ├── index.html
 │   ├── equilateral-hex/
@@ -100,6 +120,7 @@ Galway-Geometry/
 │   └── downloads/
 ├── notes/
 │   ├── index.html
+│   ├── lawful-visual-quality.md
 │   ├── management-plan.md
 │   ├── site-architecture.md
 │   ├── site-architecture.html
@@ -131,15 +152,18 @@ Some child folders may still need verification after manual GitHub uploads. Do n
 - Basic plate engine exists at `assets/js/plate-engine.js`.
 - First exhibition route exists at `exhibitions/equilateral-hex/index.html`.
 - Section roots repaired after accidental child-page overwrites.
+- Gallery, Books, Exhibitions, and Readers child routes have been repaired with real HTML destinations.
+- Daily Geometry static prototype exists at `daily/index.html`.
+- Lawful visual quality rule exists at `notes/lawful-visual-quality.md`.
 
 ## Known Risks
 
-1. Child pages may not all exist in the intended paths after manual GitHub uploads.
-2. Some links may still point to missing destinations.
-3. Some generated child pages may be thin and need richer visual content.
-4. `index.html` at site root still contains substantial inline CSS/JS and should eventually be refactored to shared assets.
-5. The plate engine is only v0.1 and does not yet perform the full compose-hold-decompose-repeat theatre.
-6. The field canvas exports SVG, but PNG export, undo, save/load, and symmetry painting remain unfinished.
+1. Some generated child pages may still be thin and need richer visual content.
+2. Any future preview image may drift into decorative geometry unless checked against the lawful visual quality rule.
+3. `index.html` at site root still contains substantial inline CSS/JS and should eventually be refactored to shared assets.
+4. The plate engine is only v0.1 and does not yet perform the full compose-hold-decompose-repeat theatre.
+5. The field canvas exports SVG, but PNG export, undo, save/load, and symmetry painting remain unfinished.
+6. Downloadable SVG assets are not yet present.
 
 ## Completed Since Initial Spine
 
@@ -157,22 +181,29 @@ Some child folders may still need verification after manual GitHub uploads. Do n
 - Added first equilateral/hex exhibition.
 - Added visual preview CSS.
 - Repaired section-root overwrite errors in Gallery, Books, Exhibitions, and Readers.
+- Repaired missing Gallery child routes.
+- Repaired missing Books child routes.
+- Repaired missing Exhibitions child routes.
+- Repaired missing Readers child routes.
+- Added Daily Geometry static prototype.
+- Added lawful visual quality rule.
 
 ## Immediate Next Work
 
-Priority 1: Final link and path audit.
+Priority 1: Lawful visual correction pass.
+
+- Review every page containing generated geometry.
+- Confirm each preview obeys the lawful substrate.
+- Replace any decorative geometry with lawful substrate geometry.
+- Prefer lawful field coordinates for every future SVG preview.
+
+Priority 2: Link and path audit continuation.
 
 - Fetch or inspect every top-level section landing page.
 - Confirm every linked child route exists.
 - Confirm every visible card is an `<a>` and receives pointer cursor.
 - Confirm no section-root `index.html` is accidentally a child page.
 - Confirm relative paths are correct from each depth.
-
-Priority 2: Update `notes/management-plan.md`.
-
-- Mark completed spine and repair tasks.
-- Add current state after upload-repair pass.
-- Move capability work to the top.
 
 Priority 3: Improve Field Canvas v0.1.
 
@@ -202,9 +233,11 @@ Priority 5: Downloadables v0.1.
 
 Do not drift into manifesto language on the public landing page.
 
-Do not reinterpret the project as a generic image gallery merely because the user asks for pictures. In this project, pictures should usually mean generated geometry, visual plates, tessellations, mandalas, field drawings, or SVG previews.
+Do not reinterpret the project as a generic image gallery merely because the user asks for pictures. In this project, pictures should usually mean generated lawful geometry, visual plates, tessellations, mandalas, field drawings, or SVG previews.
 
 Do not bury the visitor in theory at the front door. The front page should say what the site contains and what visitors can do.
+
+The site is lawful geometry. No image should betray the field.
 
 The user strongly prefers momentum. When using the GitHub connector, proceed with concrete repository operations and request permissions as needed. Avoid stopping after each micro-step unless there is a real uncertainty or failure.
 
@@ -212,4 +245,4 @@ The user strongly prefers momentum. When using the GitHub connector, proceed wit
 
 You are continuing work on `TitanicParker/Galway-Geometry`, an all-HTML GitHub Pages site created by a GPT user with ChatGPT as development partner. Preserve the user's public direction: Galway Geometry is a practical/aesthetic visual geometry site for geometric art, mandalas, tessellations, colouring, field drawing, visual exhibitions, and deeper constructional geometry. Do not turn the public front page into a theorem manifesto. Do not reinterpret pictures as generic photos; use generated geometry, SVG previews, visual plates, mandalas, tessellations, and field drawings.
 
-Start by reading `PROJECT_STATUS.md`, `notes/management-plan.md`, and `notes/site-architecture.md`. Then audit links and paths. Confirm top-level section roots are landing pages, not child pages. Continue from the current priorities: final link/path audit, update management plan, improve Field Canvas v0.1, improve Plate Reader v0.1, add downloadables v0.1.
+Start by reading `PROJECT_STATUS.md`, `notes/management-plan.md`, `notes/site-architecture.md`, and `notes/lawful-visual-quality.md`. Then audit links, paths, and visual lawfulness. Confirm top-level section roots are landing pages, not child pages. Confirm that no geometry image betrays the lawful substrate. Continue from the current priorities: lawful visual correction pass, link/path audit, improve Field Canvas v0.1, improve Plate Reader v0.1, add downloadables v0.1.
