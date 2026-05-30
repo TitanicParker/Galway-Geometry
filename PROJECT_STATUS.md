@@ -71,38 +71,47 @@ books/theorem-zero-book-2/index.html
 books/construction-ledger/index.html
 books/companion/index.html
 books/visual-relations/index.html
+readers/plate-engine/index.html
 ```
 
-Remaining visual pages should be converted progressively, especially Exhibitions, Readers, section roots, and notes HTML pages.
+Remaining visual pages should be converted progressively, especially Exhibitions, other Readers routes, section roots, and notes HTML pages.
 
 ## Plate System
 
-The project now has the first version of a plate browsing system.
+The project now has the first version of a plate browsing and reader-selection system.
 
 Core files:
 
 ```text
 assets/js/plate-registry.js
 assets/js/plate-deck.js
+assets/js/plate-reader-page.js
 plates/index.html
+readers/plate-engine/index.html
 ```
 
 The plate registry contains coded plate records. These are instructions for the renderer, not visible explanations for the visitor.
 
 The Plate Deck page renders one still plate at a time through the substrate viewport system. The visitor can Pass, Keep, or Watch. Kept plates are stored locally in the browser for now.
 
+The Plate Engine reader route now accepts selected plates from the deck using a query string:
+
+```text
+readers/plate-engine/?plate=diameter-study
+```
+
+The reader currently renders the selected plate as a lawful still viewport and writes the selected plate title/caption into the reader page. The next stage is timed compose, hold, decompose, and repeat from the same plate record.
+
 This establishes the split between:
 
-- Reader: executes a plate over time.
+- Reader: executes or displays a selected plate.
 - Plate: coded instruction set for the reader/renderer.
 - Deck: still-card browsing and taste selection.
 - Viewport: visible aperture onto the lawful substrate.
 
-Next plate work should connect the Watch link to a reader route that accepts `?plate=<id>` and executes the selected plate dynamically.
-
 ## Current Status
 
-The repository now has a public site spine, working navigation sections, shared styling, shared scripts, documentation, a custom 404, GitHub Pages support, a basic field canvas tool, a basic plate reader engine, the first exhibition route, repaired section roots, repaired child routes, a static Daily Geometry prototype, a first shared substrate viewport system, and an initial Plate Deck.
+The repository now has a public site spine, working navigation sections, shared styling, shared scripts, documentation, a custom 404, GitHub Pages support, a basic field canvas tool, a basic plate reader engine, the first exhibition route, repaired section roots, repaired child routes, a static Daily Geometry prototype, a first shared substrate viewport system, an initial Plate Deck, and a registry-connected Plate Engine route.
 
 A recent upload repair pass was required because some child pages were accidentally uploaded over section-root `index.html` files. The affected section roots have been repaired.
 
@@ -151,6 +160,8 @@ The deeper project includes construction ledgers, visual relation readers, Theor
 - Plate registry exists at `assets/js/plate-registry.js`.
 - Plate Deck exists at `plates/index.html`.
 - Plate Deck stills are rendered through the lawful substrate viewport.
+- Plate Reader page controller exists at `assets/js/plate-reader-page.js`.
+- Plate Engine route reads `?plate=<id>` and renders the selected plate as a lawful viewport.
 - Field paint engine exists at `assets/js/field-paint.js`.
 - Plate reader styles exist at `assets/css/plate-reader.css`.
 - Basic plate engine exists at `assets/js/plate-engine.js`.
@@ -164,13 +175,13 @@ The deeper project includes construction ledgers, visual relation readers, Theor
 
 ## Known Risks
 
-1. The Plate Deck Watch link points to `readers/plate-engine/?plate=<id>`, but that reader route does not yet consume the plate id dynamically.
+1. Plate Engine currently renders selected plates as still lawful viewports; it does not yet animate compose-hold-decompose-repeat from the plate record.
 2. Exhibitions and Readers prepared routes still need viewport conversion except where a true authored plate event is intended.
 3. Section roots and notes HTML pages may still carry independent inline SVG previews.
 4. Some generated child pages may still be thin and need richer visual content.
 5. Any future preview image may drift into decorative geometry unless checked against the lawful visual quality rule.
 6. `index.html` at site root still contains substantial inline CSS/JS and should eventually be refactored to shared assets.
-7. The plate engine is only v0.1 and does not yet perform the full compose-hold-decompose-repeat theatre.
+7. The older `assets/js/plate-engine.js` is still only v0.1 and should be reconciled with the registry-connected reader route.
 8. The field canvas exports SVG, but PNG export, undo, save/load, and symmetry painting remain unfinished.
 9. Downloadable SVG assets are not yet present.
 
@@ -203,15 +214,17 @@ The deeper project includes construction ledgers, visual relation readers, Theor
 - Added initial plate registry.
 - Added initial Plate Deck browser.
 - Added public Plate Deck page.
+- Added Plate Reader page controller.
+- Connected Plate Engine route to the plate registry query parameter.
 
 ## Immediate Next Work
 
-Priority 1: Connect Plate Deck to Reader.
+Priority 1: Animate selected plates in the reader.
 
-- Update `readers/plate-engine/index.html` so it reads `?plate=<id>`.
-- Load `assets/js/plate-registry.js` and `assets/js/substrate-viewport.js`.
-- Execute or at least display the selected plate through the reader route.
-- Later add timed compose-hold-decompose-repeat execution from the same plate record.
+- Extend plate records with compose/hold/decompose instructions.
+- Reconcile `assets/js/plate-engine.js` with `assets/js/plate-reader-page.js`.
+- Make `readers/plate-engine/index.html` execute timed plate states, not only still render.
+- Keep the still render available for deck browsing.
 
 Priority 2: Continue lawful viewport conversion.
 
@@ -266,4 +279,4 @@ The user strongly prefers momentum. When using the GitHub connector, proceed wit
 
 You are continuing work on `TitanicParker/Galway-Geometry`, an all-HTML GitHub Pages site created by a GPT user with ChatGPT as development partner. Preserve the user's public direction: Galway Geometry is a practical/aesthetic visual geometry site for geometric art, mandalas, tessellations, colouring, field drawing, visual exhibitions, plate browsing, and deeper constructional geometry. Do not turn the public front page into a theorem manifesto. Do not reinterpret pictures as generic photos; use generated geometry, SVG previews, visual plates, mandalas, tessellations, and field drawings.
 
-Start by reading `PROJECT_STATUS.md`, `notes/management-plan.md`, `notes/site-architecture.md`, and `notes/lawful-visual-quality.md`. Then audit links, paths, and visual lawfulness. Confirm top-level section roots are landing pages, not child pages. Confirm that no geometry image betrays the lawful substrate. Prefer substrate viewports using `assets/js/geometry-field.js` and `assets/js/substrate-viewport.js`. Continue from the current priorities: connect Plate Deck to Reader, lawful viewport conversion pass, link/path audit, improve Field Canvas v0.1, add downloadables v0.1.
+Start by reading `PROJECT_STATUS.md`, `notes/management-plan.md`, `notes/site-architecture.md`, and `notes/lawful-visual-quality.md`. Then audit links, paths, and visual lawfulness. Confirm top-level section roots are landing pages, not child pages. Confirm that no geometry image betrays the lawful substrate. Prefer substrate viewports using `assets/js/geometry-field.js` and `assets/js/substrate-viewport.js`. Continue from the current priorities: animate selected plates in the reader, lawful viewport conversion pass, link/path audit, improve Field Canvas v0.1, add downloadables v0.1.
