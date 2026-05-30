@@ -73,9 +73,42 @@ Before a page is considered visually acceptable, ask:
 
 If the answer fails, the visual should be corrected.
 
+## Substrate Viewport Rule
+
+The preferred implementation is now the substrate viewport.
+
+A page should not hand-draw its own geometry preview when the preview can be rendered from the base field.
+
+Use a viewport declaration:
+
+```html
+<div
+  class="preview"
+  data-substrate-viewport
+  data-view="field"
+  data-width="900"
+  data-height="420"
+  data-unit="72"
+  data-shells="5">
+</div>
+```
+
+Then load:
+
+```html
+<script src="../../assets/js/geometry-field.js"></script>
+<script src="../../assets/js/substrate-viewport.js"></script>
+```
+
+Adjust the relative path depth as needed.
+
+The page selects a lawful window. The substrate renderer draws the field, stations, cells, circles, and relation marks.
+
+This keeps the SVG space as a viewport into the base substrate rather than a separate illustration.
+
 ## Implementation Rule
 
-Future pages should prefer generated inline SVG based on the triangular lattice projection.
+Future pages should prefer generated inline SVG based on the triangular lattice projection or a declared substrate viewport.
 
 Do not use generic stock images.
 
