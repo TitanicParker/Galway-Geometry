@@ -6,7 +6,7 @@ Galway Geometry is being created by a GPT user working with ChatGPT as a develop
 
 The user wants an all-HTML public site, friendly to GitHub Pages, with no framework requirement and no build system unless explicitly introduced later. The site should feel like a public visual geometry destination: aesthetic, practical, browsable, and usable.
 
-The public front door is not a theorem manifesto. It is a place for geometric art, mandalas, tessellations, colouring, field drawing, visual exhibitions, and later deeper study.
+The public front door is not a theorem manifesto. It is a place for geometric art, mandalas, tessellations, colouring, field drawing, visual exhibitions, plate browsing, and later deeper study.
 
 ## Lawful Visual Constraint
 
@@ -75,9 +75,34 @@ books/visual-relations/index.html
 
 Remaining visual pages should be converted progressively, especially Exhibitions, Readers, section roots, and notes HTML pages.
 
+## Plate System
+
+The project now has the first version of a plate browsing system.
+
+Core files:
+
+```text
+assets/js/plate-registry.js
+assets/js/plate-deck.js
+plates/index.html
+```
+
+The plate registry contains coded plate records. These are instructions for the renderer, not visible explanations for the visitor.
+
+The Plate Deck page renders one still plate at a time through the substrate viewport system. The visitor can Pass, Keep, or Watch. Kept plates are stored locally in the browser for now.
+
+This establishes the split between:
+
+- Reader: executes a plate over time.
+- Plate: coded instruction set for the reader/renderer.
+- Deck: still-card browsing and taste selection.
+- Viewport: visible aperture onto the lawful substrate.
+
+Next plate work should connect the Watch link to a reader route that accepts `?plate=<id>` and executes the selected plate dynamically.
+
 ## Current Status
 
-The repository now has a public site spine, working navigation sections, shared styling, shared scripts, documentation, a custom 404, GitHub Pages support, a basic field canvas tool, a basic plate reader engine, the first exhibition route, repaired section roots, repaired child routes, a static Daily Geometry prototype, and a first shared substrate viewport system.
+The repository now has a public site spine, working navigation sections, shared styling, shared scripts, documentation, a custom 404, GitHub Pages support, a basic field canvas tool, a basic plate reader engine, the first exhibition route, repaired section roots, repaired child routes, a static Daily Geometry prototype, a first shared substrate viewport system, and an initial Plate Deck.
 
 A recent upload repair pass was required because some child pages were accidentally uploaded over section-root `index.html` files. The affected section roots have been repaired.
 
@@ -105,6 +130,7 @@ Galway Geometry is a visual geometry project for:
 - tessellations;
 - field drawing;
 - visual plate readers;
+- plate browsing and curation;
 - image-to-geometry experiments;
 - colouring sheets;
 - deeper constructional geometry.
@@ -122,6 +148,9 @@ The deeper project includes construction ledgers, visual relation readers, Theor
 - Field Canvas v0.1 exists at `field-canvas/paint/app.html`.
 - Geometry field engine exists at `assets/js/geometry-field.js`.
 - Substrate viewport renderer exists at `assets/js/substrate-viewport.js`.
+- Plate registry exists at `assets/js/plate-registry.js`.
+- Plate Deck exists at `plates/index.html`.
+- Plate Deck stills are rendered through the lawful substrate viewport.
 - Field paint engine exists at `assets/js/field-paint.js`.
 - Plate reader styles exist at `assets/css/plate-reader.css`.
 - Basic plate engine exists at `assets/js/plate-engine.js`.
@@ -135,14 +164,15 @@ The deeper project includes construction ledgers, visual relation readers, Theor
 
 ## Known Risks
 
-1. Exhibitions and Readers prepared routes still need viewport conversion except where a true authored plate event is intended.
-2. Section roots and notes HTML pages may still carry independent inline SVG previews.
-3. Some generated child pages may still be thin and need richer visual content.
-4. Any future preview image may drift into decorative geometry unless checked against the lawful visual quality rule.
-5. `index.html` at site root still contains substantial inline CSS/JS and should eventually be refactored to shared assets.
-6. The plate engine is only v0.1 and does not yet perform the full compose-hold-decompose-repeat theatre.
-7. The field canvas exports SVG, but PNG export, undo, save/load, and symmetry painting remain unfinished.
-8. Downloadable SVG assets are not yet present.
+1. The Plate Deck Watch link points to `readers/plate-engine/?plate=<id>`, but that reader route does not yet consume the plate id dynamically.
+2. Exhibitions and Readers prepared routes still need viewport conversion except where a true authored plate event is intended.
+3. Section roots and notes HTML pages may still carry independent inline SVG previews.
+4. Some generated child pages may still be thin and need richer visual content.
+5. Any future preview image may drift into decorative geometry unless checked against the lawful visual quality rule.
+6. `index.html` at site root still contains substantial inline CSS/JS and should eventually be refactored to shared assets.
+7. The plate engine is only v0.1 and does not yet perform the full compose-hold-decompose-repeat theatre.
+8. The field canvas exports SVG, but PNG export, undo, save/load, and symmetry painting remain unfinished.
+9. Downloadable SVG assets are not yet present.
 
 ## Completed Since Initial Spine
 
@@ -170,10 +200,20 @@ The deeper project includes construction ledgers, visual relation readers, Theor
 - Converted Daily Geometry to use a substrate viewport.
 - Converted all Gallery child visual routes to substrate viewports.
 - Converted all Books child visual routes to substrate viewports.
+- Added initial plate registry.
+- Added initial Plate Deck browser.
+- Added public Plate Deck page.
 
 ## Immediate Next Work
 
-Priority 1: Continue lawful viewport conversion.
+Priority 1: Connect Plate Deck to Reader.
+
+- Update `readers/plate-engine/index.html` so it reads `?plate=<id>`.
+- Load `assets/js/plate-registry.js` and `assets/js/substrate-viewport.js`.
+- Execute or at least display the selected plate through the reader route.
+- Later add timed compose-hold-decompose-repeat execution from the same plate record.
+
+Priority 2: Continue lawful viewport conversion.
 
 - Convert Exhibitions prepared routes to substrate viewport declarations where appropriate.
 - Convert Readers prepared routes to substrate viewport declarations where appropriate.
@@ -181,15 +221,16 @@ Priority 1: Continue lawful viewport conversion.
 - Convert notes HTML pages to substrate viewports.
 - Keep independent SVG only when it is authored as a true plate event and still obeys the substrate.
 
-Priority 2: Link and path audit continuation.
+Priority 3: Link and path audit continuation.
 
+- Link `plates/index.html` from the public navigation or home page.
 - Fetch or inspect every top-level section landing page.
 - Confirm every linked child route exists.
 - Confirm every visible card is an `<a>` and receives pointer cursor.
 - Confirm no section-root `index.html` is accidentally a child page.
 - Confirm relative paths are correct from each depth.
 
-Priority 3: Improve Field Canvas v0.1.
+Priority 4: Improve Field Canvas v0.1.
 
 - Add PNG export.
 - Add better mobile/touch painting.
@@ -197,14 +238,6 @@ Priority 3: Improve Field Canvas v0.1.
 - Add undo.
 - Add larger field options.
 - Add symmetry mode later.
-
-Priority 4: Improve Plate Reader v0.1.
-
-- Add timed compose-hold-decompose-repeat loop.
-- Add plate metadata.
-- Add keyboard navigation.
-- Add touch-friendly arrows.
-- Expand Equilateral / Hex exhibition beyond two plates.
 
 Priority 5: Downloadables v0.1.
 
@@ -225,10 +258,12 @@ The site is lawful geometry. No image should betray the field.
 
 A visual area should be a viewport onto the substrate unless there is a specific reason for an authored plate-specific SVG.
 
+The plate is code for the reader/renderer, not prose for the visitor.
+
 The user strongly prefers momentum. When using the GitHub connector, proceed with concrete repository operations and request permissions as needed. Avoid stopping after each micro-step unless there is a real uncertainty or failure.
 
 ## Short Continuation Prompt For A New Conversation
 
-You are continuing work on `TitanicParker/Galway-Geometry`, an all-HTML GitHub Pages site created by a GPT user with ChatGPT as development partner. Preserve the user's public direction: Galway Geometry is a practical/aesthetic visual geometry site for geometric art, mandalas, tessellations, colouring, field drawing, visual exhibitions, and deeper constructional geometry. Do not turn the public front page into a theorem manifesto. Do not reinterpret pictures as generic photos; use generated geometry, SVG previews, visual plates, mandalas, tessellations, and field drawings.
+You are continuing work on `TitanicParker/Galway-Geometry`, an all-HTML GitHub Pages site created by a GPT user with ChatGPT as development partner. Preserve the user's public direction: Galway Geometry is a practical/aesthetic visual geometry site for geometric art, mandalas, tessellations, colouring, field drawing, visual exhibitions, plate browsing, and deeper constructional geometry. Do not turn the public front page into a theorem manifesto. Do not reinterpret pictures as generic photos; use generated geometry, SVG previews, visual plates, mandalas, tessellations, and field drawings.
 
-Start by reading `PROJECT_STATUS.md`, `notes/management-plan.md`, `notes/site-architecture.md`, and `notes/lawful-visual-quality.md`. Then audit links, paths, and visual lawfulness. Confirm top-level section roots are landing pages, not child pages. Confirm that no geometry image betrays the lawful substrate. Prefer substrate viewports using `assets/js/geometry-field.js` and `assets/js/substrate-viewport.js`. Continue from the current priorities: lawful viewport conversion pass, link/path audit, improve Field Canvas v0.1, improve Plate Reader v0.1, add downloadables v0.1.
+Start by reading `PROJECT_STATUS.md`, `notes/management-plan.md`, `notes/site-architecture.md`, and `notes/lawful-visual-quality.md`. Then audit links, paths, and visual lawfulness. Confirm top-level section roots are landing pages, not child pages. Confirm that no geometry image betrays the lawful substrate. Prefer substrate viewports using `assets/js/geometry-field.js` and `assets/js/substrate-viewport.js`. Continue from the current priorities: connect Plate Deck to Reader, lawful viewport conversion pass, link/path audit, improve Field Canvas v0.1, add downloadables v0.1.
