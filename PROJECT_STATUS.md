@@ -6,19 +6,46 @@ Galway Geometry is being created by a GPT user working with ChatGPT as a develop
 
 The user wants an all-HTML public site, friendly to GitHub Pages, with no framework requirement and no build system unless explicitly introduced later. The site should feel like a public visual geometry destination: aesthetic, practical, browsable, and usable.
 
-The public front door is not a theorem manifesto. It is a place for geometric art, mandalas, tessellations, colouring, field drawing, visual exhibitions, plate browsing, and later deeper study.
+The public front door is not a theorem manifesto. It is a mode gateway for geometric experience.
 
-## Active Phase: Public Front Door plus Construction Dashboard
+## Governing Front Door: Four Modes
 
-Construction Mode remains active as a builder dashboard, but it is no longer promoted by a public banner on the home page.
+The home page is now a four-mode gateway. This is the governing organizing principle for the public site.
 
-The public home page now leads with visitor-facing actions:
+The first choice a visitor sees should be:
 
 ```text
-workshops/colouring/
-plates/
-daily/
+Colouring
+Constructions
+Stills
+Ordinary Website
 ```
+
+Mode meanings:
+
+- Colouring: printable and digital colouring sheets, mandalas, lawful rings, overlaps, cells, and the colouring generator.
+- Constructions: composition/decomposition, animated reader plates, Plate Deck, and exhibitions.
+- Stills: images that are simply there: gallery stills, visual reservoirs, poster studies, downloads, and mined visual material.
+- Ordinary Website: the conventional route map for visitors who want the normal site architecture: gallery, field canvas, exhibitions, books, notes, workshops, and project pages.
+
+Current mode routes:
+
+```text
+Colouring -> workshops/colouring/
+Constructions -> readers/plate-engine/?plate=diameter-study
+Stills -> visual-reservoirs/
+Ordinary Website -> site/
+```
+
+The ordinary website route was added at:
+
+```text
+site/index.html
+```
+
+Construction Mode remains available as a small builder link, but it is no longer the public organizing principle.
+
+## Construction Dashboard and Reservoir Mining
 
 The construction dashboard remains available at:
 
@@ -26,28 +53,27 @@ The construction dashboard remains available at:
 construction/index.html
 ```
 
-The current active construction assets are:
+The active construction assets are:
 
 ```text
 construction/galway_geometry_100_plate_catalogue.html
 construction/galway_geometry_site_population_reservoir.html
 construction/colouring-generator/
 miscellaneous-visuals/index.html
+visual-reservoirs/index.html
 ```
 
 The first is the 120 Plate Reservoir: a standalone catalogue of lawful runtime/still plates.
 
 The second is the Site Population Reservoir: a mineable asset library for Gallery, Colouring, Tessellations, Exhibitions, Daily Geometry, Construction Mode, Downloadable SVG Sheets, and renderer view modes.
 
-The third is the Colouring Generator: a deterministic lawful colouring-sheet tool expected to contain:
+The third is the Colouring Generator: a deterministic lawful colouring-sheet tool now reachable through the `construction/colouring-generator/` wrapper.
+
+The Visual Reservoirs index is the canonical doorway for designer-made visual material:
 
 ```text
-construction/colouring-generator/index.html
-construction/colouring-generator/recipes.js
-construction/colouring-generator/renderer.js
+visual-reservoirs/index.html
 ```
-
-The GitHub connector could not yet verify the uploaded generator files at the expected path during the first wiring pass. Links have still been pointed to `construction/colouring-generator/` so they will resolve when the folder is correctly present.
 
 A controlled holding area exists for surplus lawful visual material:
 
@@ -57,11 +83,9 @@ miscellaneous-visuals/index.html
 
 Anything lawful but not directly integrated should be staged there rather than lost.
 
-Construction Mode is not the final public positioning. It is a working layer behind the public-facing architecture while the site is being built.
-
 ## Lawful Visual Constraint
 
-The central quality rule is now explicit:
+The central quality rule is explicit:
 
 No geometry image should betray the lawfulness of the field.
 
@@ -79,7 +103,7 @@ notes/lawful-visual-quality.md
 
 ## Reservoir and Generator Integration
 
-The following previously underpopulated routes are now wired to the population reservoir and/or generator:
+The following previously underpopulated routes are now wired to the population reservoir, visual reservoir index, and/or generator:
 
 ```text
 workshops/colouring/index.html
@@ -88,11 +112,12 @@ field-canvas/tessellations/index.html
 field-canvas/export/index.html
 miscellaneous-visuals/index.html
 construction/index.html
+gallery/index.html
+visual-reservoirs/index.html
+site/index.html
 ```
 
-These routes now point visitors/builders to the relevant reservoir sections while stable extracted files are prepared.
-
-Colouring Workshop now links to:
+Colouring Workshop links to:
 
 ```text
 construction/colouring-generator/
@@ -100,23 +125,23 @@ construction/galway_geometry_site_population_reservoir.html#colouring-assets
 construction/galway_geometry_site_population_reservoir.html#downloadable-svg-sheets
 ```
 
-Reservoir sections currently used as source material:
+Visual Reservoirs links to the source reservoirs and mined routes:
 
 ```text
-#colouring-assets
-#tessellation-assets
-#gallery-assets
-#exhibition-assets
-#daily-geometry-assets
-#construction-mode-assets
-#downloadable-svg-sheets
-#renderer-view-modes
+construction/galway_geometry_100_plate_catalogue.html
+construction/galway_geometry_site_population_reservoir.html
+construction/colouring-generator/
+miscellaneous-visuals/index.html
+gallery/
+workshops/colouring/
+workshops/tessellations/
+field-canvas/tessellations/
+field-canvas/export/
 ```
 
 Next extraction targets:
 
-- verify `construction/colouring-generator/` contains `index.html`, `recipes.js`, and `renderer.js`;
-- promote the Colouring Generator into the public workshop route when verified;
+- fix or verify the Colouring Generator visible SVG rendering;
 - permanent downloadable SVG sheets;
 - gallery still subsets;
 - colouring sheet pages;
@@ -172,6 +197,7 @@ books/companion/index.html
 books/visual-relations/index.html
 readers/plate-engine/index.html
 miscellaneous-visuals/index.html
+site/index.html
 ```
 
 Remaining visual pages should be converted progressively, especially Exhibitions, other Readers routes, section roots, and notes HTML pages.
@@ -217,21 +243,23 @@ This establishes the split between:
 
 ## Current Status
 
-The repository now has a public site spine, working navigation sections, shared styling, shared scripts, documentation, a custom 404, GitHub Pages support, a basic field canvas tool, a basic plate reader engine, the first exhibition route, repaired section roots, repaired child routes, a static Daily Geometry prototype, a first shared substrate viewport system, an initial Plate Deck, a registry-connected Plate Engine route that executes authored plate sequences, a Construction Mode dashboard behind the public front door, two major visual reservoirs wired into underpopulated routes, and a Colouring Generator target wired from Construction Mode, Colouring Workshop, and Miscellaneous Visuals.
+The repository now has a four-mode public gateway, a normal website mode route, working navigation sections, shared styling, shared scripts, documentation, a custom 404, GitHub Pages support, a basic field canvas tool, a plate reader engine, repaired section roots, repaired child routes, a Daily Geometry prototype, a shared substrate viewport system, an initial Plate Deck, a registry-connected Plate Engine route, a Construction Mode dashboard behind the public front door, two major visual reservoirs, a Visual Reservoirs index, a Miscellaneous Visuals holding route, and a Colouring Generator wrapper.
 
 ## What Works Now
 
-- Home page exists and no longer displays the Construction Mode banner.
-- Home page hero routes visitors to Colouring, Plate Deck, and Daily Geometry.
+- Home page is a four-mode gateway: Colouring, Constructions, Stills, Ordinary Website.
+- Ordinary Website Mode exists at `site/index.html`.
+- Visual Reservoirs index exists at `visual-reservoirs/index.html`.
 - Construction dashboard exists at `construction/index.html`.
 - 120 Plate Reservoir exists at `construction/galway_geometry_100_plate_catalogue.html`.
 - Site Population Reservoir exists at `construction/galway_geometry_site_population_reservoir.html`.
-- Colouring Generator is wired at `construction/colouring-generator/`, pending file verification by connector.
+- Colouring Generator is reachable at `construction/colouring-generator/` through a wrapper and script aliases.
 - Miscellaneous Visuals holding area exists at `miscellaneous-visuals/index.html`.
 - Colouring Workshop is wired to the Colouring Generator and reservoir assets.
 - Tessellations Workshop is wired to reservoir assets.
 - Field Canvas Tessellations is wired to reservoir assets.
 - Field Canvas Export is wired to reservoir assets.
+- Gallery is wired to Visual Reservoirs.
 - Major section landing pages exist.
 - Shared CSS exists.
 - Shared JavaScript exists.
@@ -245,12 +273,6 @@ The repository now has a public site spine, working navigation sections, shared 
 - Plate Deck stills are rendered through the lawful substrate viewport.
 - Plate Reader page controller exists at `assets/js/plate-reader-page.js`.
 - Plate Engine route reads `?plate=<id>` and executes the selected plate sequence.
-- Field paint engine exists at `assets/js/field-paint.js`.
-- Plate reader styles exist at `assets/css/plate-reader.css`.
-- Basic plate engine exists at `assets/js/plate-engine.js`.
-- First exhibition route exists at `exhibitions/equilateral-hex/index.html`.
-- Section roots repaired after accidental child-page overwrites.
-- Gallery, Books, Exhibitions, and Readers child routes have been repaired with real HTML destinations.
 - Daily Geometry static prototype exists at `daily/index.html` and uses a substrate viewport.
 - All Gallery child visual routes use substrate viewports.
 - All Books child visual routes use substrate viewports.
@@ -258,19 +280,18 @@ The repository now has a public site spine, working navigation sections, shared 
 
 ## Known Risks
 
-1. The Colouring Generator links point to `construction/colouring-generator/`, but connector verification of that path failed immediately after upload.
-2. The Colouring Generator depends on `recipes.js` and `renderer.js` being present beside `index.html`.
-3. Reservoir pages are standalone prototypes; they should be mined, not blindly merged.
-4. Plate sequences currently switch rendered states; they do not yet animate individual geometric primitives continuously inside one SVG timeline.
-5. The substrate viewport renderer has only a small set of visual views: `minimal`, `field`, `diameters`, and `catalogue`.
-6. Exhibitions and Readers prepared routes still need viewport conversion except where a true authored plate event is intended.
-7. Section roots and notes HTML pages may still carry independent inline SVG previews.
-8. Some generated child pages may still be thin and need richer visual content.
-9. Any future preview image may drift into decorative geometry unless checked against the lawful visual quality rule.
-10. `index.html` at site root still contains substantial inline CSS/JS and should eventually be refactored to shared assets.
-11. The older `assets/js/plate-engine.js` is still only v0.1 and should be reconciled with the registry-connected reader route.
-12. The field canvas exports SVG, but PNG export, undo, save/load, and symmetry painting remain unfinished.
-13. Stable extracted downloadable SVG assets are not yet present as separate files.
+1. The Colouring Generator loads, but the selected SVG sheet may appear blank or too faint; renderer visibility needs inspection and patching.
+2. Reservoir pages are standalone prototypes; they should be mined, not blindly merged.
+3. Plate sequences currently switch rendered states; they do not yet animate individual geometric primitives continuously inside one SVG timeline.
+4. The substrate viewport renderer has only a small set of visual views: `minimal`, `field`, `diameters`, and `catalogue`.
+5. Exhibitions and Readers prepared routes still need viewport conversion except where a true authored plate event is intended.
+6. Section roots and notes HTML pages may still carry independent inline SVG previews.
+7. Some generated child pages may still be thin and need richer visual content.
+8. Any future preview image may drift into decorative geometry unless checked against the lawful visual quality rule.
+9. `index.html` at site root is now simple but still carries inline CSS rather than shared assets.
+10. The older `assets/js/plate-engine.js` is still only v0.1 and should be reconciled with the registry-connected reader route.
+11. The field canvas exports SVG, but PNG export, undo, save/load, and symmetry painting remain unfinished.
+12. Stable extracted downloadable SVG assets are not yet present as separate files.
 
 ## Completed Since Initial Spine
 
@@ -306,28 +327,32 @@ The repository now has a public site spine, working navigation sections, shared 
 - Added authored sequences to the plate registry.
 - Updated the reader to execute authored plate sequences.
 - Added Construction Mode dashboard.
-- Added Construction Mode entry points to the home page.
-- Added Construction Mode to management files.
 - Added 120 Plate Reservoir.
 - Added Site Population Reservoir.
 - Added Miscellaneous Visuals holding route.
 - Wired underpopulated workshop/export routes to the reservoirs.
-- Updated Construction Mode dashboard to prioritise reservoirs.
-- Wired Colouring Generator target into Construction Mode, Colouring Workshop, and Miscellaneous Visuals.
-- Removed prominent Construction Mode banner from public home page.
-- Updated home hero to route visitors to Colouring, Plate Deck, and Daily Geometry.
+- Added Visual Reservoirs index.
+- Wired Gallery, Miscellaneous Visuals, and Construction to Visual Reservoirs.
+- Added Colouring Generator wrapper and script aliases.
+- Replaced public home page with four-mode gateway.
+- Added Ordinary Website Mode at `site/index.html`.
 
 ## Immediate Next Work
 
-Priority 1: Verify and promote the Colouring Generator.
+Priority 1: Stabilize the four-mode gateway.
 
-- Confirm `construction/colouring-generator/index.html` exists.
-- Confirm `construction/colouring-generator/recipes.js` exists.
-- Confirm `construction/colouring-generator/renderer.js` exists.
-- Verify the generator loads from GitHub Pages.
-- If successful, decide whether to keep it as a construction tool or promote it into `workshops/colouring/`.
+- Verify each mode route opens correctly.
+- Confirm the mode gateway is clear on mobile.
+- Decide whether Constructions should route to Plate Deck, Reader, or an intermediate Constructions Mode page.
+- Decide whether Stills should route to Visual Reservoirs or a cleaner public Stills page later.
 
-Priority 2: Mine the reservoirs into stable assets.
+Priority 2: Fix and promote the Colouring Generator.
+
+- Patch renderer visibility if the selected SVG sheet remains blank or too faint.
+- Confirm SVG download and print work.
+- Decide whether to promote generator from construction wrapper into `workshops/colouring/`.
+
+Priority 3: Mine the reservoirs into stable assets.
 
 - Extract permanent downloadable SVG sheets.
 - Extract a first gallery still subset.
@@ -337,36 +362,24 @@ Priority 2: Mine the reservoirs into stable assets.
 - Extract reusable renderer modes into `assets/js/substrate-viewport.js`.
 - Extract selected plates into `assets/js/plate-registry.js`.
 
-Priority 3: Continue lawful viewport conversion.
+Priority 4: Continue lawful viewport conversion and cleanup.
 
 - Convert Exhibitions prepared routes to substrate viewport declarations where appropriate.
 - Convert Readers prepared routes to substrate viewport declarations where appropriate.
-- Convert section roots to substrate viewports.
-- Convert notes HTML pages to substrate viewports.
 - Keep independent SVG only when it is authored as a true plate event and still obeys the substrate.
-
-Priority 4: Improve Field Canvas v0.1.
-
-- Add PNG export.
-- Add better mobile/touch painting.
-- Add hover/active feedback.
-- Add undo.
-- Add larger field options.
-- Add symmetry mode later.
-
-Priority 5: Prepare public v1 cleanup.
-
-- Keep Construction Mode available but not dominant.
-- Refactor the home page inline CSS/JS into shared assets.
-- Separate construction prototypes from public-facing final routes.
+- Refactor inline CSS/JS into shared assets when the mode structure settles.
 
 ## Working Principle for Future GPT Sessions
 
+The first organizing principle is the four-mode gateway: Colouring, Constructions, Stills, Ordinary Website.
+
+Do not let the site collapse back into an overgrown list of routes.
+
 Do not drift into manifesto language on the public landing page.
 
-Do not reinterpret the project as a generic image gallery merely because the user asks for pictures. In this project, pictures should usually mean generated lawful geometry, visual plates, tessellations, mandalas, field drawings, or SVG previews.
+Do not reinterpret pictures as generic photos. In this project, pictures should mean generated lawful geometry, visual plates, tessellations, mandalas, field drawings, SVG previews, or geometric artifacts.
 
-Do not bury the visitor in theory at the front door. The front page should say what the site contains and what visitors can do.
+Do not bury the visitor in theory at the front door. The front page should ask the visitor what kind of experience they want.
 
 During construction, keep Construction Mode available as the working surface, but do not let it dominate the public home page.
 
@@ -384,4 +397,4 @@ The user strongly prefers momentum. When using the GitHub connector, proceed wit
 
 ## Short Continuation Prompt For A New Conversation
 
-You are continuing work on `TitanicParker/Galway-Geometry`, an all-HTML GitHub Pages site created by a GPT user with ChatGPT as development partner. The public home page is now visitor-facing again; Construction Mode remains available but is no longer shown as a prominent public banner. Start from `construction/index.html`, `construction/galway_geometry_100_plate_catalogue.html`, `construction/galway_geometry_site_population_reservoir.html`, `construction/colouring-generator/`, `miscellaneous-visuals/index.html`, `PROJECT_STATUS.md`, `notes/management-plan.md`, `notes/site-architecture.md`, and `notes/lawful-visual-quality.md`. Preserve the user's public direction: Galway Geometry is a practical/aesthetic visual geometry site for geometric art, mandalas, tessellations, colouring, field drawing, visual exhibitions, plate browsing, and deeper constructional geometry. Do not turn the public front page into a theorem manifesto. Do not reinterpret pictures as generic photos; use generated geometry, SVG previews, visual plates, mandalas, tessellations, and field drawings. Confirm that no geometry image betrays the lawful substrate. Prefer substrate viewports using `assets/js/geometry-field.js` and `assets/js/substrate-viewport.js`. Continue from the current priorities: verify and promote Colouring Generator, mine reservoirs into stable assets, lawful viewport conversion pass, improve Field Canvas v0.1, prepare public v1 cleanup.
+You are continuing work on `TitanicParker/Galway-Geometry`, an all-HTML GitHub Pages site created by a GPT user with ChatGPT as development partner. The public home page is now a four-mode gateway: Colouring, Constructions, Stills, Ordinary Website. This is the governing organizing principle. Start from `index.html`, `site/index.html`, `visual-reservoirs/index.html`, `construction/index.html`, `construction/galway_geometry_100_plate_catalogue.html`, `construction/galway_geometry_site_population_reservoir.html`, `construction/colouring-generator/`, `miscellaneous-visuals/index.html`, `PROJECT_STATUS.md`, `notes/management-plan.md`, `notes/site-architecture.md`, and `notes/lawful-visual-quality.md`. Preserve the user's public direction: Galway Geometry is a practical/aesthetic visual geometry site for geometric art, mandalas, tessellations, colouring, field drawing, visual exhibitions, plate browsing, and deeper constructional geometry. Do not turn the public front page into a theorem manifesto. Do not let the site collapse back into an overgrown list of routes. Confirm that no geometry image betrays the lawful substrate. Continue from the current priorities: stabilize the four-mode gateway, fix/promote Colouring Generator, mine reservoirs into stable assets, continue lawful viewport conversion, prepare public v1 cleanup.
