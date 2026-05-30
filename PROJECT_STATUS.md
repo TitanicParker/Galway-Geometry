@@ -8,6 +8,35 @@ The user wants an all-HTML public site, friendly to GitHub Pages, with no framew
 
 The public front door is not a theorem manifesto. It is a place for geometric art, mandalas, tessellations, colouring, field drawing, visual exhibitions, plate browsing, and later deeper study.
 
+## Active Phase: Construction Mode
+
+Construction Mode is now active.
+
+The site has a final public architecture in mind, but active work should surface the current working objects first. This prevents the builder from having to search the finished architecture to find the tools and pages currently under construction.
+
+The construction dashboard is:
+
+```text
+construction/index.html
+```
+
+The home page now exposes Construction Mode at the top through a visible strip, navigation link, and hero actions.
+
+Current active build objects:
+
+```text
+plates/index.html
+readers/plate-engine/?plate=diameter-study
+daily/index.html
+field-canvas/paint/app.html
+assets/js/plate-registry.js
+PROJECT_STATUS.md
+```
+
+Future work should update the construction dashboard whenever the active build focus changes.
+
+Construction Mode is not the final public positioning. It is a working layer placed in front of the final site architecture while the site is being built.
+
 ## Lawful Visual Constraint
 
 The central quality rule is now explicit:
@@ -117,44 +146,12 @@ This establishes the split between:
 
 ## Current Status
 
-The repository now has a public site spine, working navigation sections, shared styling, shared scripts, documentation, a custom 404, GitHub Pages support, a basic field canvas tool, a basic plate reader engine, the first exhibition route, repaired section roots, repaired child routes, a static Daily Geometry prototype, a first shared substrate viewport system, an initial Plate Deck, and a registry-connected Plate Engine route that executes authored plate sequences.
-
-A recent upload repair pass was required because some child pages were accidentally uploaded over section-root `index.html` files. The affected section roots have been repaired.
-
-Repaired section roots:
-
-```text
-gallery/index.html
-books/index.html
-exhibitions/index.html
-readers/index.html
-```
-
-Already correct during audit:
-
-```text
-notes/index.html
-```
-
-## Project Identity
-
-Galway Geometry is a visual geometry project for:
-
-- geometric art;
-- mandalas;
-- tessellations;
-- field drawing;
-- visual plate readers;
-- plate browsing and curation;
-- image-to-geometry experiments;
-- colouring sheets;
-- deeper constructional geometry.
-
-The deeper project includes construction ledgers, visual relation readers, Theorem Zero material, and a lawful geometric field model. That deeper project should remain available but should not dominate the landing page.
+The repository now has a public site spine, working navigation sections, shared styling, shared scripts, documentation, a custom 404, GitHub Pages support, a basic field canvas tool, a basic plate reader engine, the first exhibition route, repaired section roots, repaired child routes, a static Daily Geometry prototype, a first shared substrate viewport system, an initial Plate Deck, a registry-connected Plate Engine route that executes authored plate sequences, and an active Construction Mode dashboard.
 
 ## What Works Now
 
-- Home page exists.
+- Home page exists and now surfaces Construction Mode.
+- Construction dashboard exists at `construction/index.html`.
 - Major section landing pages exist.
 - Shared CSS exists.
 - Shared JavaScript exists.
@@ -181,16 +178,17 @@ The deeper project includes construction ledgers, visual relation readers, Theor
 
 ## Known Risks
 
-1. Plate sequences currently switch rendered states; they do not yet animate individual geometric primitives continuously inside one SVG timeline.
-2. The substrate viewport renderer has only a small set of visual views: `minimal`, `field`, `diameters`, and `catalogue`.
-3. Exhibitions and Readers prepared routes still need viewport conversion except where a true authored plate event is intended.
-4. Section roots and notes HTML pages may still carry independent inline SVG previews.
-5. Some generated child pages may still be thin and need richer visual content.
-6. Any future preview image may drift into decorative geometry unless checked against the lawful visual quality rule.
-7. `index.html` at site root still contains substantial inline CSS/JS and should eventually be refactored to shared assets.
-8. The older `assets/js/plate-engine.js` is still only v0.1 and should be reconciled with the registry-connected reader route.
-9. The field canvas exports SVG, but PNG export, undo, save/load, and symmetry painting remain unfinished.
-10. Downloadable SVG assets are not yet present.
+1. Construction Mode is intentionally prominent and should eventually be demoted or removed for public v1.0.
+2. Plate sequences currently switch rendered states; they do not yet animate individual geometric primitives continuously inside one SVG timeline.
+3. The substrate viewport renderer has only a small set of visual views: `minimal`, `field`, `diameters`, and `catalogue`.
+4. Exhibitions and Readers prepared routes still need viewport conversion except where a true authored plate event is intended.
+5. Section roots and notes HTML pages may still carry independent inline SVG previews.
+6. Some generated child pages may still be thin and need richer visual content.
+7. Any future preview image may drift into decorative geometry unless checked against the lawful visual quality rule.
+8. `index.html` at site root still contains substantial inline CSS/JS and should eventually be refactored to shared assets.
+9. The older `assets/js/plate-engine.js` is still only v0.1 and should be reconciled with the registry-connected reader route.
+10. The field canvas exports SVG, but PNG export, undo, save/load, and symmetry painting remain unfinished.
+11. Downloadable SVG assets are not yet present.
 
 ## Completed Since Initial Spine
 
@@ -225,32 +223,32 @@ The deeper project includes construction ledgers, visual relation readers, Theor
 - Connected Plate Engine route to the plate registry query parameter.
 - Added authored sequences to the plate registry.
 - Updated the reader to execute authored plate sequences.
+- Added Construction Mode dashboard.
+- Added Construction Mode entry points to the home page.
+- Added Construction Mode to management files.
 
 ## Immediate Next Work
 
-Priority 1: Make plate sequences visually richer.
+Priority 1: Use Construction Mode as the active work surface.
+
+- Keep `construction/index.html` current with the active build focus.
+- Use it as the first page to inspect during development.
+- Update its links as priorities change.
+
+Priority 2: Make plate sequences visually richer.
 
 - Extend `assets/js/substrate-viewport.js` with more lawful views: `overlap`, `hex-only`, `rings`, `cell-field`, `poster`, and `quiet`.
 - Add more plates to `assets/js/plate-registry.js` using those views.
 - Let individual sequence states override unit, shells, or presentation mode.
 - Later add primitive-level timed drawing rather than only state replacement.
 
-Priority 2: Continue lawful viewport conversion.
+Priority 3: Continue lawful viewport conversion.
 
 - Convert Exhibitions prepared routes to substrate viewport declarations where appropriate.
 - Convert Readers prepared routes to substrate viewport declarations where appropriate.
 - Convert section roots to substrate viewports.
 - Convert notes HTML pages to substrate viewports.
 - Keep independent SVG only when it is authored as a true plate event and still obeys the substrate.
-
-Priority 3: Link and path audit continuation.
-
-- Link `plates/index.html` from the public navigation or home page.
-- Fetch or inspect every top-level section landing page.
-- Confirm every linked child route exists.
-- Confirm every visible card is an `<a>` and receives pointer cursor.
-- Confirm no section-root `index.html` is accidentally a child page.
-- Confirm relative paths are correct from each depth.
 
 Priority 4: Improve Field Canvas v0.1.
 
@@ -276,6 +274,8 @@ Do not reinterpret the project as a generic image gallery merely because the use
 
 Do not bury the visitor in theory at the front door. The front page should say what the site contains and what visitors can do.
 
+During construction, use Construction Mode as the working surface and surface current active objects first.
+
 The site is lawful geometry. No image should betray the field.
 
 A visual area should be a viewport onto the substrate unless there is a specific reason for an authored plate-specific SVG.
@@ -286,6 +286,4 @@ The user strongly prefers momentum. When using the GitHub connector, proceed wit
 
 ## Short Continuation Prompt For A New Conversation
 
-You are continuing work on `TitanicParker/Galway-Geometry`, an all-HTML GitHub Pages site created by a GPT user with ChatGPT as development partner. Preserve the user's public direction: Galway Geometry is a practical/aesthetic visual geometry site for geometric art, mandalas, tessellations, colouring, field drawing, visual exhibitions, plate browsing, and deeper constructional geometry. Do not turn the public front page into a theorem manifesto. Do not reinterpret pictures as generic photos; use generated geometry, SVG previews, visual plates, mandalas, tessellations, and field drawings.
-
-Start by reading `PROJECT_STATUS.md`, `notes/management-plan.md`, `notes/site-architecture.md`, and `notes/lawful-visual-quality.md`. Then audit links, paths, and visual lawfulness. Confirm top-level section roots are landing pages, not child pages. Confirm that no geometry image betrays the lawful substrate. Prefer substrate viewports using `assets/js/geometry-field.js` and `assets/js/substrate-viewport.js`. Continue from the current priorities: enrich plate sequences and substrate views, lawful viewport conversion pass, link/path audit, improve Field Canvas v0.1, add downloadables v0.1.
+You are continuing work on `TitanicParker/Galway-Geometry`, an all-HTML GitHub Pages site created by a GPT user with ChatGPT as development partner. Construction Mode is active. Start from `construction/index.html`, `PROJECT_STATUS.md`, `notes/management-plan.md`, `notes/site-architecture.md`, and `notes/lawful-visual-quality.md`. The site has a final public architecture, but during construction the current working objects should be surfaced first. Preserve the user's public direction: Galway Geometry is a practical/aesthetic visual geometry site for geometric art, mandalas, tessellations, colouring, field drawing, visual exhibitions, plate browsing, and deeper constructional geometry. Do not turn the public front page into a theorem manifesto. Do not reinterpret pictures as generic photos; use generated geometry, SVG previews, visual plates, mandalas, tessellations, and field drawings. Confirm that no geometry image betrays the lawful substrate. Prefer substrate viewports using `assets/js/geometry-field.js` and `assets/js/substrate-viewport.js`. Continue from the current priorities: use Construction Mode as the active work surface, enrich plate sequences and substrate views, lawful viewport conversion pass, improve Field Canvas v0.1, add downloadables v0.1.
