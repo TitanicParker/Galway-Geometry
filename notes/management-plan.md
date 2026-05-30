@@ -4,13 +4,42 @@
 
 This document is the working management plan for completing the Galway Geometry site.
 
-Galway Geometry is an all-HTML GitHub Pages friendly public project for geometric art, mandalas, tessellations, visual plate readers, field drawing, colouring sheets, gallery outputs, and deeper constructional geometry materials.
+Galway Geometry is an all-HTML GitHub Pages friendly public project for geometric art, mandalas, tessellations, visual plate readers, field drawing, colouring sheets, gallery outputs, plate browsing, and deeper constructional geometry materials.
 
 The public front door should remain aesthetic, practical, and visitor-facing. The deeper project should remain accessible, but it should not dominate the landing page.
 
+## Active Build Convention: Construction Mode
+
+Construction Mode is now the active project convention.
+
+The final public architecture remains the goal, but during active construction the site must surface the current working objects first.
+
+The working dashboard is:
+
+```text
+construction/index.html
+```
+
+The home page now has a visible Construction Mode entry point near the top. This is intentional. It allows the site owner to open the public site and immediately reach the current active build objects without navigating the final architecture.
+
+Current Construction Mode objects:
+
+```text
+plates/index.html
+readers/plate-engine/?plate=diameter-study
+daily/index.html
+field-canvas/paint/app.html
+assets/js/plate-registry.js
+PROJECT_STATUS.md
+```
+
+The dashboard should be updated as the active build focus changes.
+
+Construction Mode does not replace the public site. It is a temporary working layer placed in front of the final architecture while the site is being built.
+
 ## Current Repository State
 
-The repository now has a working public spine, shared visual styling, shared scripts, documentation, a custom 404, a basic field canvas tool, a basic plate reader, a first exhibition route, repaired section roots, repaired child routes, and a static Daily Geometry prototype.
+The repository now has a working public spine, shared visual styling, shared scripts, documentation, a custom 404, a basic field canvas tool, a basic plate reader, a plate registry, a plate deck, a registry-connected reader route, a first exhibition route, repaired section roots, repaired child routes, a static Daily Geometry prototype, and a Construction Mode dashboard.
 
 Core public structure:
 
@@ -31,14 +60,20 @@ Galway-Geometry/
 │       ├── field-paint.js
 │       ├── geometry-field.js
 │       ├── navigation.js
+│       ├── plate-deck.js
 │       ├── plate-engine.js
+│       ├── plate-reader-page.js
+│       ├── plate-registry.js
+│       ├── substrate-viewport.js
 │       └── typewriter.js
 ├── books/
+├── construction/
 ├── daily/
 ├── exhibitions/
 ├── field-canvas/
 ├── gallery/
 ├── notes/
+├── plates/
 ├── readers/
 └── workshops/
 ```
@@ -75,6 +110,8 @@ exhibitions/archive/index.html
 readers/visual-relations/index.html
 readers/plate-engine/index.html
 daily/index.html
+construction/index.html
+plates/index.html
 ```
 
 Already existing and confirmed during this pass:
@@ -92,9 +129,15 @@ notes/site-architecture.html
 notes/project-status.html
 ```
 
-## Current Design Rule
+## Current Design Rules
 
 Every card that looks like a door must be a real door.
+
+No geometry image should betray the lawful field.
+
+A visual area should be a viewport onto the substrate unless there is a specific reason for an authored plate-specific SVG.
+
+The plate is code for the reader/renderer, not prose for the visitor.
 
 Use this pattern for clickable cards:
 
@@ -117,11 +160,12 @@ The Galway Geometry site is complete at version 1.0 when:
 3. The site works cleanly on phone, tablet, and desktop.
 4. The visual style is coherent across all pages.
 5. Visitors can watch exhibitions.
-6. Visitors can use or preview a field canvas.
-7. Visitors can download tessellation or colouring materials.
-8. Visitors can view a gallery.
-9. Visitors can access the deeper project and books.
-10. The repository is organised well enough for future growth.
+6. Visitors can browse plates.
+7. Visitors can use or preview a field canvas.
+8. Visitors can download tessellation or colouring materials.
+9. Visitors can view a gallery.
+10. Visitors can access the deeper project and books.
+11. The repository is organised well enough for future growth.
 
 Version 1.0 does not require every ambitious tool to be complete. It requires a convincing public site with clear working paths.
 
@@ -147,6 +191,7 @@ Completed:
 - [x] Add simple 404 page.
 - [x] Repair section roots after upload overwrite issue.
 - [x] Repair missing child pages behind visible cards.
+- [x] Add Construction Mode dashboard.
 
 Remaining:
 
@@ -157,9 +202,9 @@ Remaining:
 
 ## Milestone 2: Landing Page Completion
 
-Status: substantially started.
+Status: substantially started; Construction Mode active.
 
-The landing page currently presents the site as public visual geometry, not as a theorem manifesto. It has clear routes into making, watching, field canvas, gallery, and deeper project areas.
+The landing page currently presents the site as public visual geometry, not as a theorem manifesto. It now also surfaces Construction Mode at the top while the site is actively being built.
 
 Remaining:
 
@@ -167,8 +212,31 @@ Remaining:
 - [ ] Add or confirm Open Graph metadata.
 - [ ] Confirm hero and visual preview on phone, tablet, and desktop.
 - [ ] Continue removing any residual heavy theory from first-contact copy.
+- [ ] Eventually remove or demote Construction Mode when the public site reaches v1.0.
 
-## Milestone 3: Exhibitions Section
+## Milestone 3: Plate Deck and Reader
+
+Status: v0.1 working.
+
+Completed:
+
+- [x] Add `plates/index.html`.
+- [x] Add `assets/js/plate-registry.js`.
+- [x] Add `assets/js/plate-deck.js`.
+- [x] Add `assets/js/plate-reader-page.js`.
+- [x] Connect `readers/plate-engine/index.html` to `?plate=<id>`.
+- [x] Add authored plate sequences.
+- [x] Make reader execute plate sequences by state replacement.
+
+Remaining:
+
+- [ ] Add richer lawful substrate views.
+- [ ] Add more plate records.
+- [ ] Add primitive-level timed drawing.
+- [ ] Add visible liked-plates review page.
+- [ ] Reconcile older `assets/js/plate-engine.js` with the registry-connected reader route.
+
+## Milestone 4: Exhibitions Section
 
 Status: route structure repaired; engine still early.
 
@@ -182,15 +250,11 @@ Completed:
 
 Remaining:
 
-- [ ] Improve `assets/js/plate-engine.js`.
-- [ ] Add timed compose-hold-decompose-repeat loop.
-- [ ] Add plate metadata.
-- [ ] Add keyboard navigation.
-- [ ] Add touch-friendly previous/next controls.
+- [ ] Convert prepared exhibition routes to substrate viewports where appropriate.
 - [ ] Expand Equilateral / Hex beyond two plates.
-- [ ] Add a plate registry format.
+- [ ] Decide whether exhibitions use the registry plate system or a separate exhibition registry.
 
-## Milestone 4: Field Canvas Section
+## Milestone 5: Field Canvas Section
 
 Status: basic tool exists; child routes exist.
 
@@ -214,9 +278,9 @@ Remaining:
 - [ ] Add symmetry mode.
 - [ ] Add save/load JSON later.
 
-## Milestone 5: Gallery Section
+## Milestone 6: Gallery Section
 
-Status: route structure repaired.
+Status: route structure repaired; child visuals converted.
 
 Completed:
 
@@ -227,7 +291,7 @@ Completed:
 - [x] `gallery/field-drawings/index.html` exists.
 - [x] `gallery/community/index.html` exists.
 - [x] `gallery/downloads/index.html` exists.
-- [x] Each child route has visible generated SVG geometry.
+- [x] All Gallery child visual routes use substrate viewports.
 
 Remaining:
 
@@ -236,9 +300,9 @@ Remaining:
 - [ ] Add captions and download links where appropriate.
 - [ ] Decide whether community gallery is curated or open.
 
-## Milestone 6: Books and Deeper Project
+## Milestone 7: Books and Deeper Project
 
-Status: route structure repaired.
+Status: route structure repaired; child visuals converted.
 
 Completed:
 
@@ -248,6 +312,7 @@ Completed:
 - [x] `books/construction-ledger/index.html` exists.
 - [x] `books/companion/index.html` exists.
 - [x] `books/visual-relations/index.html` exists.
+- [x] All Books child visual routes use substrate viewports.
 
 Remaining:
 
@@ -256,33 +321,6 @@ Remaining:
 - [ ] Add table of contents.
 - [ ] Add mobile-friendly long-form reading style.
 - [ ] Add print styles.
-
-## Milestone 7: Shared Plate Engine
-
-Status: v0.1 exists; main capability work remains.
-
-The central architecture must stay intact:
-
-The substrate HTML is the theatre.
-The plate is the authored visual event.
-
-The preferred rhythm is:
-
-1. blank beginning;
-2. lawful composition;
-3. completed moment;
-4. lawful decomposition;
-5. return to blank;
-6. repeat.
-
-Remaining:
-
-- [ ] Define plate object format.
-- [ ] Define renderer functions for point, line, circle, polygon, cell, field, glow, and fade.
-- [ ] Define timing logic.
-- [ ] Define compose/decompose sequence logic.
-- [ ] Add keyboard and touch support.
-- [ ] Respect reduced-motion preference.
 
 ## Milestone 8: Daily Geometry
 
@@ -294,10 +332,11 @@ Completed:
 - [x] Page shows a generated geometry plate.
 - [x] Page includes one relation and one drawing prompt.
 - [x] Page uses honest wording for future email subscription.
+- [x] Page uses a substrate viewport.
+- [x] Daily Geometry is linked from the construction dashboard.
 
 Remaining:
 
-- [ ] Link Daily Geometry from the home page and relevant section pages.
 - [ ] Add date-based plate selection.
 - [ ] Add daily plate registry.
 - [ ] Choose external provider before adding any real email subscription form.
@@ -315,12 +354,12 @@ Next files to add:
 
 ## Immediate Next Work Order
 
-1. Link `daily/index.html` from the home page.
-2. Improve `assets/js/plate-engine.js` to perform compose-hold-decompose-repeat.
-3. Improve `exhibitions/equilateral-hex/index.html` with more plates and minimal arrow navigation.
-4. Improve `field-canvas/paint/app.html` with PNG export and undo.
-5. Add the first downloadable SVG assets.
-6. Add real exported gallery items from the tool and exhibition pages.
+1. Use Construction Mode as the active work surface.
+2. Enrich `assets/js/substrate-viewport.js` with more lawful visual views.
+3. Add more plates to `assets/js/plate-registry.js`.
+4. Convert remaining Exhibitions, Readers, section roots, and notes visual pages to substrate viewports where appropriate.
+5. Improve `field-canvas/paint/app.html` with PNG export and undo.
+6. Add the first downloadable SVG assets.
 
 ## Working Principle
 
@@ -329,5 +368,7 @@ Do not drift into manifesto language on the public landing page.
 Do not reinterpret pictures as generic photos. In this project, pictures usually means generated geometry, visual plates, tessellations, mandalas, field drawings, SVG previews, or geometric artifacts.
 
 Do not bury the visitor in theory at the front door. The front page should say what the site contains and what visitors can do.
+
+During construction, put current working objects in Construction Mode first.
 
 Keep momentum. Do coherent batches. Report at useful checkpoints.
